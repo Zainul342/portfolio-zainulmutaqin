@@ -63,6 +63,24 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="font-sans antialiased bg-[#1e1e2e] text-[#cdd6f4]">
         {children}
+        {/* Widjet (widjet.com) embed */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.__wj = window.__wj || {};
+              window.__wj.widgetId = "ba962aad-6fe3-4f4e-a1b9-b01377230a4e";
+              window.__wj.product_name = "widjet";
+              ;(function(w,d,s){
+                var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s);
+                j.async=true;
+                j.src="https://jqvcafbrccpmygiihyry.supabase.co/functions/v1/widget-loader";
+                f.parentNode.insertBefore(j,f);
+              })(window,document,'script');
+            `,
+          }}
+        />
+        <noscript>Enable JavaScript to use the widget powered by Widjet</noscript>
       </body>
     </html>
   )
