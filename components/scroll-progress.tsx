@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-const SECTIONS = ['hero', 'about', 'skills', 'projects', 'contact']
+const SECTIONS = ['hero', 'about', 'experience', 'projects', 'contact']
 
 export function ScrollProgress() {
   const [progress, setProgress] = useState(0)

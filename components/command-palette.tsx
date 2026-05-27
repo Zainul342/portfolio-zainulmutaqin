@@ -116,12 +116,12 @@ function buildCommands(onClose: () => void, setEasterEgg: (key: string) => void)
       action: () => scrollTo('about'),
     },
     {
-      id: 'nav-skills',
-      label: 'go to skills',
-      description: 'Check out the tech stack',
+      id: 'nav-experience',
+      label: 'go to experience',
+      description: 'See professional timeline and milestones',
       category: 'navigate',
       icon: <Hash size={14} />,
-      action: () => scrollTo('skills'),
+      action: () => scrollTo('experience'),
     },
     {
       id: 'nav-contact',
@@ -149,7 +149,7 @@ function buildCommands(onClose: () => void, setEasterEgg: (key: string) => void)
       category: 'action',
       icon: <Mail size={14} />,
       action: () => {
-        window.location.href = 'mailto:zainul@example.com'
+        window.location.href = 'mailto:akuzainul176@gmail.com'
         onClose()
       },
     },

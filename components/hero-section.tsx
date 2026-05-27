@@ -39,17 +39,27 @@ function useTypewriter(lines: typeof BOOT_LINES) {
   const [typingSpeed, setTypingSpeed] = useState(DESKTOP_TYPING_SPEED)
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (mediaQuery.matches) {
+      setDisplayedLines(lines.map((l) => l.text))
+      setDone(true)
+      return
+    }
+
     const updateTypingSpeed = () => {
-      if (typeof window === 'undefined') return
       setTypingSpeed(window.innerWidth < 768 ? MOBILE_TYPING_SPEED : DESKTOP_TYPING_SPEED)
     }
 
     updateTypingSpeed()
     window.addEventListener('resize', updateTypingSpeed)
     return () => window.removeEventListener('resize', updateTypingSpeed)
-  }, [])
+  }, [lines])
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return
+    }
     if (currentLineIndex >= lines.length) {
       setDone(true)
       return
@@ -88,16 +98,20 @@ function useTypewriter(lines: typeof BOOT_LINES) {
   return { displayedLines, done }
 }
 
-export function HeroSection({ onOpenPalette }: { onOpenPalette: () => void }) {
+export function HeroSection() {
   const { displayedLines, done } = useTypewriter(BOOT_LINES)
   const [revealed, setRevealed] = useState(false)
   const [glitching, setGlitching] = useState(false)
-  const [globeSize, setGlobeSize] = useState(400)
   const nameRef = useRef<HTMLHeadingElement>(null)
   const rightColRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (done) {
+      if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        setRevealed(true)
+        setGlitching(false)
+        return
+      }
       const t = setTimeout(() => {
         setRevealed(true)
         setTimeout(() => {
@@ -109,21 +123,7 @@ export function HeroSection({ onOpenPalette }: { onOpenPalette: () => void }) {
     }
   }, [done])
 
-  // Measure right column to set globe size responsively
-  useEffect(() => {
-    const update = () => {
-      if (typeof window === 'undefined') return
-      const w = window.innerWidth
-      if (w < 1024) {
-        setGlobeSize(200)
-      } else {
-        setGlobeSize(400)
-      }
-    }
-    update()
-    window.addEventListener('resize', update)
-    return () => window.removeEventListener('resize', update)
-  }, [])
+
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
@@ -278,7 +278,7 @@ export function HeroSection({ onOpenPalette }: { onOpenPalette: () => void }) {
 
             {/* Cmd+K hint */}
             <button
-              onClick={onOpenPalette}
+              onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
               className="font-mono text-xs transition-colors cursor-none"
               style={{ color: '#6c7086' }}
               onMouseEnter={(e) => { e.currentTarget.style.color = '#cba6f7' }}
@@ -300,22 +300,19 @@ export function HeroSection({ onOpenPalette }: { onOpenPalette: () => void }) {
         {/* ── RIGHT COLUMN — Globe ── */}
         <div
           ref={rightColRef}
-          className="flex items-center justify-center lg:justify-end order-last lg:order-none"
+          className="absolute inset-0 lg:relative lg:flex items-center justify-center lg:justify-end order-last lg:order-none pointer-events-none lg:pointer-events-auto opacity-15 lg:opacity-100 z-0 lg:z-10"
           style={{
-            // Levitate float animation via inline keyframe trick using CSS var
             animation: 'globeFloat 6s ease-in-out infinite',
           }}
           aria-hidden="true"
         >
           <div
-            className="relative"
+            className="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[440px] lg:h-[440px]"
             style={{
-              filter: 'drop-shadow(0 0 40px rgba(203,166,247,0.12))',
-              width: globeSize,
-              height: globeSize,
+              filter: 'drop-shadow(0 0 40px rgba(203,166,247,0.08))',
             }}
           >
-            <GlobeCanvas size={globeSize} />
+            <GlobeCanvas />
           </div>
         </div>
       </div>

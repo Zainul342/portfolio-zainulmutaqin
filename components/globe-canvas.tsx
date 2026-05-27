@@ -185,12 +185,13 @@ const LAND_DOTS_MOBILE = LAND_DOTS.filter((_, index) => index % 2 === 0)
 
 // ---- Component --------------------------------------------------------------
 interface GlobeCanvasProps {
-  size?: number
   className?: string
 }
 
-export function GlobeCanvas({ size = 400, className = '' }: GlobeCanvasProps) {
+export function GlobeCanvas({ className = '' }: GlobeCanvasProps) {
   const canvasRef  = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [size, setSize] = useState(300)
   const [isMobile, setIsMobile] = useState(false)
   const stateRef   = useRef({
     rotY:    (180 - JAKARTA_LON) * DEG,  // start so Jakarta faces viewer
@@ -204,15 +205,30 @@ export function GlobeCanvas({ size = 400, className = '' }: GlobeCanvasProps) {
     raf:     0,
   })
 
+  // Measure container dimensions reactively
   useEffect(() => {
-    const updateIsMobile = () => {
-      if (typeof window === 'undefined') return
-      setIsMobile(window.innerWidth < 768)
+    const container = containerRef.current
+    if (!container) return
+
+    const updateSizing = () => {
+      const w = window.innerWidth
+      setIsMobile(w < 768)
+      
+      const width = container.clientWidth
+      const height = container.clientHeight
+      const side = Math.min(width, height) || 300
+      setSize(side)
     }
 
-    updateIsMobile()
-    window.addEventListener('resize', updateIsMobile)
-    return () => window.removeEventListener('resize', updateIsMobile)
+    updateSizing()
+    const observer = new ResizeObserver(updateSizing)
+    observer.observe(container)
+    window.addEventListener('resize', updateSizing)
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', updateSizing)
+    }
   }, [])
 
   // Canonical render function stored in ref so event handlers always get fresh
@@ -235,9 +251,9 @@ export function GlobeCanvas({ size = 400, className = '' }: GlobeCanvasProps) {
     ctx.clearRect(0, 0, W, H)
 
     // ---- Atmosphere glow ----
-    const glowR = r * 1.18
-    const grad = ctx.createRadialGradient(cx, cy, r * 0.92, cx, cy, glowR)
-    grad.addColorStop(0, CLR_GLOW)
+    const glowR = r * 1.15
+    const grad = ctx.createRadialGradient(cx, cy, r * 0.94, cx, cy, glowR)
+    grad.addColorStop(0, 'rgba(203,166,247,0.06)') // Softer, more subtle glow
     grad.addColorStop(1, 'rgba(203,166,247,0)')
     ctx.beginPath()
     ctx.arc(cx, cy, glowR, 0, Math.PI * 2)
@@ -256,9 +272,9 @@ export function GlobeCanvas({ size = 400, className = '' }: GlobeCanvasProps) {
     ctx.arc(cx, cy, r, 0, Math.PI * 2)
     ctx.clip()
 
-    // ---- Lat/Lon grid ----
+    // ---- Lat/Lon grid (Thinner grid lines) ----
     ctx.strokeStyle = CLR_GRID
-    ctx.lineWidth = 0.6
+    ctx.lineWidth = 0.35 // Thinner and more elegant
 
     const pointStep = isMobile ? 6 : 3
     const dots = isMobile ? LAND_DOTS_MOBILE : LAND_DOTS
@@ -294,22 +310,30 @@ export function GlobeCanvas({ size = 400, className = '' }: GlobeCanvasProps) {
     // ---- Sphere outline ring ----
     ctx.beginPath()
     ctx.arc(cx, cy, r, 0, Math.PI * 2)
-    ctx.strokeStyle = 'rgba(69,71,90,0.7)'
-    ctx.lineWidth = 1.2
+    ctx.strokeStyle = 'rgba(69,71,90,0.45)'
+    ctx.lineWidth = 0.8
     ctx.stroke()
 
-    // ---- Land dots ----
-    const dotR = Math.max(1.5, r / 95) * dpr * 0.6
+    // ---- Land dots (Depth of Field effect) ----
+    const dotR = Math.max(1.2, r / 95) * dpr * 0.65
     for (const [lat, lon] of dots) {
       const [dx, dy, dz] = project(...latLonToXYZ(lat, lon, r), s.rotY, s.rotX, cx, cy)
-      // Cull points outside sphere (edge guard)
+      // Cull points outside sphere
       const distSq = (dx - cx) ** 2 + (dy - cy) ** 2
       if (distSq > r * r) continue
 
       const isFront = dz >= 0
+      
+      // Calculate dot size and opacity based on depth (dz)
+      const depthFactor = (dz + r) / (2 * r) // 0 to 1
+      const dotOpacity = isFront ? 0.3 + 0.65 * depthFactor : 0.06 + 0.12 * depthFactor
+      const currentDotR = dotR * (0.8 + 0.35 * depthFactor)
+
       ctx.beginPath()
-      ctx.arc(dx, dy, dotR, 0, Math.PI * 2)
-      ctx.fillStyle = isFront ? CLR_LAND : CLR_LAND_BACK
+      ctx.arc(dx, dy, currentDotR, 0, Math.PI * 2)
+      ctx.fillStyle = isFront 
+        ? `rgba(203, 166, 247, ${dotOpacity})` 
+        : `rgba(203, 166, 247, ${dotOpacity})`
       ctx.fill()
     }
 
@@ -320,22 +344,22 @@ export function GlobeCanvas({ size = 400, className = '' }: GlobeCanvasProps) {
     )
     const jDistSq = (jx - cx) ** 2 + (jy - cy) ** 2
     if (jz >= 0 && jDistSq < r * r) {
-      // Outer pulse ring — driven by time for CSS-free animation
+      // Refined pulsing marker
       const t  = performance.now() / 1000
       const pulse = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(t * 2.5))
-      const pulseR = (r / 28) * (1.5 + pulse)
+      const pulseR = (r / 28) * (1.3 + pulse)
       ctx.beginPath()
       ctx.arc(jx, jy, pulseR, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(166,227,161,${0.15 * pulse})`
+      ctx.fillStyle = `rgba(166,227,161,${0.12 * pulse})`
       ctx.fill()
-      // Middle ring
+      
       ctx.beginPath()
-      ctx.arc(jx, jy, r / 32, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(166,227,161,${0.35 + 0.15 * pulse})`
+      ctx.arc(jx, jy, r / 34, 0, Math.PI * 2)
+      ctx.fillStyle = `rgba(166,227,161,${0.25 + 0.1 * pulse})`
       ctx.fill()
-      // Core dot
+      
       ctx.beginPath()
-      ctx.arc(jx, jy, r / 55, 0, Math.PI * 2)
+      ctx.arc(jx, jy, r / 58, 0, Math.PI * 2)
       ctx.fillStyle = CLR_MARKER
       ctx.fill()
     }
@@ -346,7 +370,8 @@ export function GlobeCanvas({ size = 400, className = '' }: GlobeCanvasProps) {
   // ---- Animation loop ----
   useEffect(() => {
     const s = stateRef.current
-    const AUTO_SPEED = (2 * Math.PI) / 35000  // full rotation every ~35s
+    const mediaQuery = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null
+    const AUTO_SPEED = mediaQuery?.matches ? 0 : (2 * Math.PI) / 35000  // full rotation every ~35s
 
     let last = 0
     const loop = (ts: number) => {
@@ -389,41 +414,50 @@ export function GlobeCanvas({ size = 400, className = '' }: GlobeCanvasProps) {
       s.lastMY   = e.clientY
       canvas.setPointerCapture(e.pointerId)
     }
+
     const onPointerMove = (e: PointerEvent) => {
       if (!s.dragging) return
       const dx = e.clientX - s.lastMX
       const dy = e.clientY - s.lastMY
-      const sensitivity = (Math.PI / (size * effectiveDpr)) * (isMobile ? 2.4 : 1.8)
-      s.velY  = dx * sensitivity
-      s.velX  = dy * sensitivity
-      s.rotY += s.velY
-      s.rotX  = Math.max(-0.45, Math.min(0.45, s.rotX + s.velX))
       s.lastMX = e.clientX
       s.lastMY = e.clientY
+
+      const sensitivity = (Math.PI / (size * effectiveDpr)) * (isMobile ? 2.4 : 1.8)
+      s.rotY += dx * sensitivity
+      s.rotX += dy * sensitivity
+      s.rotX = Math.max(-0.45, Math.min(0.45, s.rotX))
+
+      drawRef.current()
     }
-    const onPointerUp = () => {
+
+    const onPointerUp = (e: PointerEvent) => {
+      if (!s.dragging) return
       s.dragging = false
-      // resume auto-rotate after a short coast
-      setTimeout(() => { s.paused = false }, 2500)
-    }
-    const onPointerCancel = () => {
-      s.dragging = false
+      canvas.releasePointerCapture(e.pointerId)
       s.paused = false
     }
+
+    const onPointerCancel = (e: PointerEvent) => {
+      if (!s.dragging) return
+      s.dragging = false
+      canvas.releasePointerCapture(e.pointerId)
+      s.paused = false
+    }
+
     const onLostPointerCapture = () => {
       s.dragging = false
     }
 
     canvas.addEventListener('pointerdown', onPointerDown)
-    window.addEventListener('pointermove', onPointerMove)
-    window.addEventListener('pointerup', onPointerUp)
-    window.addEventListener('pointercancel', onPointerCancel)
+    canvas.addEventListener('pointermove', onPointerMove)
+    canvas.addEventListener('pointerup', onPointerUp)
+    canvas.addEventListener('pointercancel', onPointerCancel)
     canvas.addEventListener('lostpointercapture', onLostPointerCapture)
     return () => {
       canvas.removeEventListener('pointerdown', onPointerDown)
-      window.removeEventListener('pointermove', onPointerMove)
-      window.removeEventListener('pointerup', onPointerUp)
-      window.removeEventListener('pointercancel', onPointerCancel)
+      canvas.removeEventListener('pointermove', onPointerMove)
+      canvas.removeEventListener('pointerup', onPointerUp)
+      canvas.removeEventListener('pointercancel', onPointerCancel)
       canvas.removeEventListener('lostpointercapture', onLostPointerCapture)
     }
   }, [size, isMobile])
@@ -435,14 +469,16 @@ export function GlobeCanvas({ size = 400, className = '' }: GlobeCanvasProps) {
   const canvasPx = size * dpr
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={canvasPx}
-      height={canvasPx}
-      className={className}
-      style={{ width: size, height: size, cursor: 'grab', touchAction: 'none' }}
-      aria-label="Interactive 3D wireframe globe showing Jakarta, Indonesia"
-      role="img"
-    />
+    <div ref={containerRef} className="w-full h-full min-h-[250px] flex items-center justify-center">
+      <canvas
+        ref={canvasRef}
+        width={canvasPx}
+        height={canvasPx}
+        className={className}
+        style={{ width: size, height: size, cursor: 'grab', touchAction: 'none' }}
+        aria-label="Interactive 3D wireframe globe showing Jakarta, Indonesia"
+        role="img"
+      />
+    </div>
   )
 }

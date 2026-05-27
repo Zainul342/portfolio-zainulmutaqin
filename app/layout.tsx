@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
+import { JsonLd } from '@/components/json-ld'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -27,14 +28,14 @@ export const metadata: Metadata = {
       'Full-stack developer based in Jakarta. Building on the web, exploring the terminal, curious about what is next.',
     url: 'https://zainulmutaqin.com',
     type: 'website',
-    images: '/og-image.svg',
+    images: '/opengraph-image',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Zainul Mutaqin — Developer Portfolio',
     description:
       'Full-stack developer based in Jakarta. Building on the web, exploring the terminal, curious about what is next.',
-    images: ['/og-image.svg'],
+    images: ['/opengraph-image'],
   },
   robots: {
     index: true,
@@ -62,6 +63,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="font-sans antialiased bg-[#1e1e2e] text-[#cdd6f4]">
+        <JsonLd />
         {children}
         {/* Widjet (widjet.com) embed */}
         <script

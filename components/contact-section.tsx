@@ -1,28 +1,15 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Github, Mail, Send, CheckCircle2, AlertCircle } from 'lucide-react'
+import { Github, Mail, Send, CheckCircle2, AlertCircle, ArrowUp } from 'lucide-react'
+import { Reveal } from '@/components/motion-wrapper'
 
 type FormState = 'idle' | 'sending' | 'success' | 'error'
 
-function useIntersectionObserver(threshold = 0.15) {
-  const ref = useRef<HTMLElement>(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true) },
-      { threshold }
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [threshold])
-  return { ref, visible }
-}
+import { useIntersectionObserver } from '@/hooks/use-intersection-observer'
 
 export function ContactSection() {
-  const { ref, visible } = useIntersectionObserver()
+  const { ref, visible } = useIntersectionObserver<HTMLElement>(0.15)
   const [formState, setFormState] = useState<FormState>('idle')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -84,6 +71,7 @@ export function ContactSection() {
       />
 
       <div className="relative max-w-2xl mx-auto">
+        <Reveal delay={0.05} direction="up">
         {/* Section label */}
         <div className="flex items-center gap-3 mb-12">
           <span className="section-label">// contact</span>
@@ -281,7 +269,7 @@ export function ContactSection() {
             github
           </a>
           <a
-            href="mailto:zainul@example.com"
+            href="mailto:akuzainul176@gmail.com"
             className="flex items-center gap-2 font-mono text-xs transition-all duration-150 cursor-none"
             style={{ color: '#6c7086' }}
             onMouseEnter={(e) => { e.currentTarget.style.color = '#cba6f7'; e.currentTarget.style.transform = 'translateY(-2px)' }}
@@ -292,6 +280,7 @@ export function ContactSection() {
             email
           </a>
         </div>
+        </Reveal>
       </div>
     </section>
   )
@@ -300,11 +289,21 @@ export function ContactSection() {
 export function Footer() {
   return (
     <footer
-      className="py-6 px-6 text-center"
-      style={{ borderTop: '1px solid #313244' }}
+      className="py-10 px-6 text-center relative"
+      style={{ borderTop: '1px solid #313244', backgroundColor: '#11111b' }}
     >
+      {/* Back to top button */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full flex items-center justify-center border border-[#313244] bg-[#181825] text-[#cba6f7] hover:text-[#d4b5f8] hover:border-[#45475a] transition-all cursor-none"
+        title="Back to Top"
+        aria-label="Back to Top"
+      >
+        <ArrowUp size={14} />
+      </button>
+
       <p className="font-mono text-xs" style={{ color: '#45475a' }}>
-        built by{' '}
+        &copy; {new Date().getFullYear()} built by{' '}
         <span style={{ color: '#6c7086' }}>zainul mutaqin</span>
         {' '}—{' '}
         <span style={{ color: '#313244' }}>{'<'}</span>
