@@ -13,16 +13,16 @@ export default function Portfolio() {
         <HeroSection />
 
         {/* Divider */}
-        <SectionDivider label="// layer 01: origin" />
+        <SectionDivider label="// about" />
         <BentoSection />
 
-        <SectionDivider label="// layer 02: terrain" />
+        <SectionDivider label="// experience" />
         <ExperienceSection />
 
-        <SectionDivider label="// layer 03: fieldwork" />
+        <SectionDivider label="// projects" />
         <ProjectsSection />
 
-        <SectionDivider label="// layer 04: signal" />
+        <SectionDivider label="// contact" />
         <ContactSection />
       </main>
     </ClientShell>

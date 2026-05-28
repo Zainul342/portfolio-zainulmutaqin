@@ -19,11 +19,6 @@ export interface Project {
   demo?: string
   featured?: boolean
   accentColor: string
-  fieldNote?: {
-    terrain: string
-    route: string
-    signal: string
-  }
 }
 
 export const PROJECTS: Project[] = [
@@ -51,11 +46,6 @@ export const PROJECTS: Project[] = [
     demo: 'https://domcy-coffee.vercel.app',
     featured: true,
     accentColor: '#f9e2af',
-    fieldNote: {
-      terrain: 'e-commerce platform',
-      route: 'concept → component → deploy',
-      signal: 'premium transaction dx',
-    },
   },
   {
     id: 'cinevault',
@@ -79,11 +69,6 @@ export const PROJECTS: Project[] = [
     ],
     github: 'https://github.com/Zainul342',
     accentColor: '#cba6f7',
-    fieldNote: {
-      terrain: 'movie library dashboard',
-      route: 'php core → sql → templates',
-      signal: 'high-efficiency zero-build',
-    },
   },
   {
     id: 'studyflow',
@@ -107,11 +92,6 @@ export const PROJECTS: Project[] = [
     github: 'https://github.com/Zainul342',
     demo: 'https://snbtflow.vercel.app',
     accentColor: '#a6e3a1',
-    fieldNote: {
-      terrain: 'student tracker board',
-      route: 'react state → localstorage',
-      signal: 'offline progress syncing',
-    },
   },
   {
     id: 'weather-dashboard',
@@ -133,11 +113,6 @@ export const PROJECTS: Project[] = [
     ],
     github: 'https://github.com/Zainul342',
     accentColor: '#89b4fa',
-    fieldNote: {
-      terrain: 'weather api visualizer',
-      route: 'async fetch → dom injection',
-      signal: 'fast atmospheric metrics',
-    },
   },
   {
     id: 'ai-context-pro',
@@ -159,11 +134,6 @@ export const PROJECTS: Project[] = [
     ],
     github: 'https://github.com/Zainul342',
     accentColor: '#cba6f7',
-    fieldNote: {
-      terrain: 'prompt context generator',
-      route: 'ast parse → markdown build',
-      signal: 'llm-digestible tokens',
-    },
   },
   {
     id: 'diskdiet',
@@ -185,11 +155,6 @@ export const PROJECTS: Project[] = [
     ],
     github: 'https://github.com/Zainul342',
     accentColor: '#f38ba8',
-    fieldNote: {
-      terrain: 'disk cleaning utility',
-      route: 'bash script → svelte ui',
-      signal: 'automated log trimming',
-    },
   },
 ]
 

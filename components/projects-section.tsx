@@ -121,20 +121,9 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             </Link>
           </h3>
 
-          <p className="text-xs leading-relaxed text-[#a6adc8] mb-4" style={{ lineHeight: 1.65 }}>
+          <p className="text-xs leading-relaxed text-[#a6adc8] mb-5" style={{ lineHeight: 1.65 }}>
             {project.description}
           </p>
-
-          {project.fieldNote && (
-            <div 
-              className="mb-5 rounded-md border border-[#313244] bg-[#11111b] p-3 font-mono text-[9px] text-[#6c7086] transition-opacity duration-300 flex flex-col gap-1.5"
-              style={{ opacity: hovered ? 1 : 0.7 }}
-            >
-              <div className="flex"><span className="w-12 shrink-0" style={{ color: project.accentColor }}>terrain</span> <span className="text-[#a6adc8]">{project.fieldNote.terrain}</span></div>
-              <div className="flex"><span className="w-12 shrink-0" style={{ color: project.accentColor }}>route</span> <span className="text-[#a6adc8]">{project.fieldNote.route}</span></div>
-              <div className="flex"><span className="w-12 shrink-0" style={{ color: project.accentColor }}>signal</span> <span className="text-[#a6adc8]">{project.fieldNote.signal}</span></div>
-            </div>
-          )}
         </div>
 
         <div>
@@ -221,7 +210,7 @@ export function ProjectsSection() {
           </div>
 
           <p className="font-mono text-xs mb-10 text-[#6c7086]">
-            field notes from things I&apos;ve built, tested, broken, and refined
+            things I&apos;ve built — some shipped, some experiments, all crafted with care
           </p>
 
           {/* Project grid */}
