@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
-import { ArrowRight, Mail, MapPin } from 'lucide-react'
+import { ArrowRight, Mail } from 'lucide-react'
 import dynamic from 'next/dynamic'
 
 function GlobeLoadingSkeleton() {
@@ -20,16 +20,19 @@ const GlobeCanvas = dynamic(
   { ssr: false, loading: () => <GlobeLoadingSkeleton /> },
 )
 
+import { TopographicField } from '@/components/topographic-field'
+
 const BOOT_LINES = [
-  { text: '> booting system...', delay: 0 },
-  { text: '> loading zainul.mutaqin...', delay: 600 },
-  { text: '> status: full-stack dev | linux explorer | ai/ml curious', delay: 1400 },
-  { text: '> ready.', delay: 2400 },
+  { text: '> booting quiet.cartography...', delay: 0 },
+  { text: '> origin: jakarta.id', delay: 600 },
+  { text: '> terrain: web / linux / ai', delay: 1400 },
+  { text: '> bearing: useful digital systems', delay: 2200 },
+  { text: '> signal: ready.', delay: 3000 },
 ]
 
 const MOBILE_TYPING_SPEED = 30
 const DESKTOP_TYPING_SPEED = 40
-const REVEAL_DELAY = 3200
+const REVEAL_DELAY = 3800
 
 function useTypewriter(lines: typeof BOOT_LINES) {
   const [displayedLines, setDisplayedLines] = useState<string[]>([])
@@ -118,7 +121,7 @@ export function HeroSection() {
           setGlitching(true)
           setTimeout(() => setGlitching(false), 700)
         }, 100)
-      }, REVEAL_DELAY - 2400)
+      }, Math.max(0, REVEAL_DELAY - 3000))
       return () => clearTimeout(t)
     }
   }, [done])
@@ -167,7 +170,7 @@ export function HeroSection() {
 
             {/* Terminal body */}
             <div
-              className="p-5 font-mono text-sm leading-relaxed min-h-[128px]"
+              className="p-5 font-mono text-sm leading-relaxed min-h-[148px]"
               aria-live="polite"
               aria-label="Terminal boot sequence"
             >
@@ -176,9 +179,9 @@ export function HeroSection() {
                   {displayedLines[i] !== undefined ? (
                     <span
                       style={{
-                        color: line.text.includes('ready')
+                        color: line.text.includes('signal')
                           ? '#a6e3a1'
-                          : line.text.includes('status')
+                          : line.text.includes('bearing')
                           ? '#89b4fa'
                           : '#cba6f7',
                       }}
@@ -219,19 +222,21 @@ export function HeroSection() {
               className="text-lg sm:text-xl leading-relaxed text-pretty max-w-xl"
               style={{ color: '#a6adc8' }}
             >
-              Building on the web. Exploring the terminal.{' '}
-              <span style={{ color: '#cba6f7' }}>Curious about what&rsquo;s next.</span>
+              Building quiet web systems, exploring Linux, and{' '}
+              <span style={{ color: '#cba6f7' }}>mapping ideas into useful AI-assisted tools.</span>
             </p>
 
-            {/* Coordinates — system metadata aesthetic */}
+            {/* System Metadata */}
             <div
-              className="flex items-center gap-1.5 mt-3 mb-8 font-mono text-xs"
+              className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-3 mb-8 font-mono text-xs"
               style={{ color: '#a6adc8' }}
             >
-              <MapPin size={11} style={{ color: '#cba6f7', flexShrink: 0 }} aria-hidden="true" />
-              <span>6.2088° S, 106.8456° E</span>
+              <span style={{ color: '#cba6f7' }}>origin</span>
+              <span>Jakarta.ID</span>
               <span style={{ color: '#45475a' }}>//</span>
-              <span>Jakarta, Indonesia</span>
+              <span>UTC+07</span>
+              <span style={{ color: '#45475a' }}>//</span>
+              <span>bearing: web → ai tools</span>
               <span className="terminal-cursor" style={{ marginLeft: 2 }} aria-hidden="true" />
             </div>
 
@@ -297,22 +302,19 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* ── RIGHT COLUMN — Globe ── */}
+        {/* ── RIGHT COLUMN — Topographic Field ── */}
         <div
           ref={rightColRef}
           className="absolute inset-0 lg:relative lg:flex items-center justify-center lg:justify-end order-last lg:order-none pointer-events-none lg:pointer-events-auto opacity-15 lg:opacity-100 z-0 lg:z-10"
           style={{
-            animation: 'globeFloat 6s ease-in-out infinite',
+            animation: 'globeFloat 10s ease-in-out infinite',
           }}
           aria-hidden="true"
         >
           <div
             className="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[440px] lg:h-[440px]"
-            style={{
-              filter: 'drop-shadow(0 0 40px rgba(203,166,247,0.08))',
-            }}
           >
-            <GlobeCanvas />
+            <TopographicField />
           </div>
         </div>
       </div>

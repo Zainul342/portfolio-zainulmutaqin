@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { MapPin, Coffee, Terminal, Cpu, Clock, Heart, Award } from 'lucide-react'
+import { MapPin, Coffee, Terminal, Cpu, Clock, Award } from 'lucide-react'
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer'
 import { Reveal } from '@/components/motion-wrapper'
 
@@ -330,28 +330,26 @@ export function BentoSection() {
               </div>
             </div>
 
-            {/* ── 🎯 EXTRA INFO CARD (Spans 1 column, 1 row) ───────────────────── */}
+            {/* ── 🎯 PERSONAL ATLAS CARD (Spans 1 column, 1 row) ──────────────── */}
             <div
-              className="rounded-xl p-5 transition-all duration-300 flex flex-col justify-between"
+              className="rounded-xl p-5 transition-all duration-300 flex flex-col justify-center"
               style={{
                 backgroundColor: '#181825',
-                border: `1px solid ${activeCard === 'interests' ? '#94e2d5' : '#313244'}`,
-                boxShadow: activeCard === 'interests' ? '0 8px 30px rgba(148, 226, 213, 0.05)' : 'none',
-                transform: activeCard === 'interests' ? 'translateY(-2px)' : 'translateY(0)',
+                border: `1px solid ${activeCard === 'atlas' ? '#cba6f7' : '#313244'}`,
+                boxShadow: activeCard === 'atlas' ? '0 8px 30px rgba(203, 166, 247, 0.05)' : 'none',
+                transform: activeCard === 'atlas' ? 'translateY(-2px)' : 'translateY(0)',
               }}
-              onMouseEnter={() => setActiveCard('interests')}
+              onMouseEnter={() => setActiveCard('atlas')}
               onMouseLeave={() => setActiveCard(null)}
             >
-              <div className="flex items-center justify-between">
-                <Heart size={16} style={{ color: '#94e2d5' }} />
-                <span className="font-mono text-[9px] text-[#6c7086]">interests</span>
-              </div>
               <div>
-                <div className="text-[10px] font-bold text-[#cdd6f4]">Geography & Maps</div>
-                <div className="text-[9px] text-[#a6adc8] font-mono mt-0.5">Dotfiles Optimization</div>
-              </div>
-              <div className="font-mono text-[9px] text-[#6c7086] border-t border-[#313244] pt-2">
-                Open Source & Tech Craft
+                <div className="font-mono text-[10px] text-[#cba6f7] mb-2.5">~/personal-atlas</div>
+                <div className="space-y-1.5 font-mono text-[9px] leading-relaxed text-[#a6adc8]">
+                  <div className="flex justify-between gap-1"><span className="text-[#45475a]">├──</span> <span className="flex-grow">origin</span> <span className="text-[#6c7086] text-right truncate">Jakarta, ID</span></div>
+                  <div className="flex justify-between gap-1"><span className="text-[#45475a]">├──</span> <span className="flex-grow">terrain</span> <span className="text-[#6c7086] text-right truncate">Web interfaces</span></div>
+                  <div className="flex justify-between gap-1"><span className="text-[#45475a]">├──</span> <span className="flex-grow">tools</span> <span className="text-[#6c7086] text-right truncate">Linux/TS/AI</span></div>
+                  <div className="flex justify-between gap-1"><span className="text-[#45475a]">└──</span> <span className="flex-grow">signal</span> <span className="text-[#6c7086] text-right truncate">Quiet systems</span></div>
+                </div>
               </div>
             </div>
 
