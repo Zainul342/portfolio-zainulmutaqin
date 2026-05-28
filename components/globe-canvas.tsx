@@ -3,156 +3,22 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
 
 // --- Catppuccin Mocha palette ---
-const CLR_GRID       = 'rgba(69, 71, 90, 0.55)'    // #45475a  — lat/lon grid lines
-const CLR_LAND       = '#cba6f7'                    // mauve    — continent dots
-const CLR_LAND_BACK  = 'rgba(203,166,247,0.18)'    // mauve dim — far-side dots
-const CLR_MARKER     = '#a6e3a1'                    // green    — Jakarta
-const CLR_GLOW       = 'rgba(203,166,247,0.13)'    // atmosphere glow
-const CLR_SPHERE_BG  = 'rgba(30,30,46,0.55)'       // dark fill
+const CLR_GRID        = 'rgba(108, 112, 134, 0.25)' // #6c7086 — Lat/Lon background lines
+const CLR_GRID_FRONT  = 'rgba(203, 166, 247, 0.45)' // #cba6f7 — Lat/Lon foreground lines
+const CLR_ORBIT       = 'rgba(137, 180, 250, 0.2)'  // #89b4fa — Dotted orbit tracks
+const CLR_PACKET      = '#89b4fa'                   // blue — Glowing orbit packets
+const CLR_MARKER      = '#a6e3a1'                   // green — Active target marker
+const CLR_GLOW        = 'rgba(203, 166, 247, 0.15)' // mauve — Sphere atmosphere glow
+const CLR_SPHERE_BG   = 'rgba(24, 24, 37, 0.45)'    // mantle — Sphere dark glass backing
 
 // Jakarta coordinates
 const JAKARTA_LAT = -6.2088
 const JAKARTA_LON = 106.8456
 
-// ---- Simplified continent land-dots (lat/lon pairs) -------------------------
-// Each entry is [lat, lon]. Packed as a flat number[] for perf.
-function buildLandDots(): [number, number][] {
-  const dots: [number, number][] = []
-
-  // Helper: fill a bounding box with a coast/fill mask function
-  const fill = (
-    latMin: number, latMax: number,
-    lonMin: number, lonMax: number,
-    step: number,
-    mask?: (lat: number, lon: number) => boolean,
-  ) => {
-    for (let lat = latMin; lat <= latMax; lat += step) {
-      for (let lon = lonMin; lon <= lonMax; lon += step) {
-        if (!mask || mask(lat, lon)) dots.push([lat, lon])
-      }
-    }
-  }
-
-  const s = 4 // base grid step (degrees)
-
-  // --- North America ---
-  fill(25, 70, -165, -55, s, (la, lo) => {
-    // Rough coast mask
-    if (la > 60 && lo < -140) return true          // Alaska
-    if (la > 55 && lo > -145 && lo < -60) return true // Canada
-    if (la > 42 && la < 55 && lo > -130 && lo < -65) return true
-    if (la > 25 && la < 50 && lo > -118 && lo < -65) return true
-    if (la > 15 && la < 32 && lo > -118 && lo < -80) return true
-    return false
-  })
-
-  // --- Central America / Caribbean ---
-  fill(7, 22, -95, -60, s)
-
-  // --- South America ---
-  fill(-55, 12, -82, -35, s, (la, lo) => {
-    if (la > -5 && lo < -50) return true
-    if (la > -20 && la <= -5 && lo > -75 && lo < -35) return true
-    if (la > -40 && la <= -20 && lo > -72 && lo < -38) return true
-    if (la <= -40 && lo > -75 && lo < -55) return true
-    return false
-  })
-
-  // --- Europe ---
-  fill(36, 70, -10, 30, s, (la, lo) => {
-    if (la > 55 && lo > 5 && lo < 30) return true  // Scandinavia
-    if (la > 45 && la < 58 && lo > -8 && lo < 22) return true
-    if (la > 36 && la < 48 && lo > -10 && lo < 28) return true
-    return false
-  })
-
-  // UK
-  fill(50, 59, -6, 2, s)
-
-  // Iceland
-  fill(63, 66, -24, -14, s)
-
-  // --- Africa ---
-  fill(-35, 37, -18, 52, s, (la, lo) => {
-    if (la > 20 && lo > -18 && lo < 38) return true          // North Africa
-    if (la > 0 && la <= 20 && lo > -18 && lo < 50) return true
-    if (la > -20 && la <= 0 && lo > 10 && lo < 50) return true
-    if (la > -35 && la <= -20 && lo > 12 && lo < 38) return true
-    return false
-  })
-
-  // Madagascar
-  fill(-26, -12, 43, 51, s)
-
-  // --- Asia (Russia/Eurasia) ---
-  fill(50, 75, 30, 180, s, (la, lo) => {
-    if (la > 60 && lo > 60 && lo < 180) return true
-    if (la > 50 && la <= 65 && lo > 30 && lo < 135) return true
-    return false
-  })
-
-  // Middle East / Arabian Peninsula
-  fill(12, 38, 36, 60, s)
-
-  // Indian Subcontinent
-  fill(8, 34, 68, 90, s)
-
-  // Southeast Asia (mainland)
-  fill(1, 26, 92, 110, s)
-
-  // Indonesia (Java, Sumatra, Borneo, etc.)
-  fill(-8, 6, 95, 141, s, (la, lo) => {
-    // Sumatra
-    if (la > -6 && la < 5 && lo > 95 && lo < 108) return true
-    // Java
-    if (la > -8 && la < -5 && lo > 105 && lo < 116) return true
-    // Borneo
-    if (la > -4 && la < 7 && lo > 108 && lo < 118) return true
-    // Sulawesi
-    if (la > -4 && la < 2 && lo > 119 && lo < 125) return true
-    // Papua
-    if (la > -8 && la < 0 && lo > 130 && lo < 141) return true
-    return false
-  })
-
-  // Philippines
-  fill(5, 20, 117, 127, s)
-
-  // China / East Asia
-  fill(20, 50, 100, 135, s, (la, lo) => {
-    if (la > 35 && lo > 73 && lo < 135) return true
-    if (la > 20 && la <= 35 && lo > 100 && lo < 122) return true
-    return false
-  })
-
-  // Japan
-  fill(30, 45, 130, 145, s)
-  // Taiwan
-  fill(22, 25, 120, 122, s)
-  // Sri Lanka
-  fill(6, 10, 80, 82, s)
-
-  // --- Australia ---
-  fill(-40, -11, 114, 154, s, (la, lo) => {
-    if (la > -34 && la < -12 && lo > 114 && lo < 154) return true
-    if (la <= -34 && lo > 115 && lo < 148) return true
-    return false
-  })
-
-  // New Zealand
-  fill(-46, -34, 166, 178, s)
-
-  // Greenland
-  fill(60, 84, -54, -18, s)
-
-  return dots
-}
-
-// ---- Math helpers -----------------------------------------------------------
 const DEG = Math.PI / 180
 
 function latLonToXYZ(lat: number, lon: number, r: number): [number, number, number] {
-  const phi  = (90 - lat) * DEG
+  const phi = (90 - lat) * DEG
   const theta = lon * DEG
   return [
     r * Math.sin(phi) * Math.cos(theta),
@@ -161,51 +27,64 @@ function latLonToXYZ(lat: number, lon: number, r: number): [number, number, numb
   ]
 }
 
-// Project a 3-D point onto 2-D canvas given rotation angles
+// Project a 3-D point onto 2-D canvas given Y and X rotations
 function project(
-  x: number, y: number, z: number,
-  rotY: number, rotX: number,
-  cx: number, cy: number,
+  x: number,
+  y: number,
+  z: number,
+  rotY: number,
+  rotX: number,
+  cx: number,
+  cy: number,
 ): [number, number, number] /* [sx, sy, depth] */ {
   // Rotate around Y axis
-  const cosY = Math.cos(rotY), sinY = Math.sin(rotY)
+  const cosY = Math.cos(rotY),
+    sinY = Math.sin(rotY)
   const x1 = x * cosY + z * sinY
   const z1 = -x * sinY + z * cosY
 
   // Rotate around X axis
-  const cosX = Math.cos(rotX), sinX = Math.sin(rotX)
+  const cosX = Math.cos(rotX),
+    sinX = Math.sin(rotX)
   const y2 = y * cosX - z1 * sinX
   const z2 = y * sinX + z1 * cosX
 
   return [cx + x1, cy + y2, z2]
 }
 
-const LAND_DOTS = buildLandDots()
-const LAND_DOTS_MOBILE = LAND_DOTS.filter((_, index) => index % 2 === 0)
+// Helper to get tilted orbit coordinates
+function getOrbitXYZ(angle: number, tilt: number, r: number): [number, number, number] {
+  const x = r * Math.cos(angle)
+  const z = r * Math.sin(angle)
+  const cosT = Math.cos(tilt),
+    sinT = Math.sin(tilt)
+  // Rotate on Z-axis to apply orbit tilt
+  return [x * cosT, x * sinT, z]
+}
 
-// ---- Component --------------------------------------------------------------
 interface GlobeCanvasProps {
   className?: string
 }
 
 export function GlobeCanvas({ className = '' }: GlobeCanvasProps) {
-  const canvasRef  = useRef<HTMLCanvasElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [size, setSize] = useState(300)
   const [isMobile, setIsMobile] = useState(false)
-  const stateRef   = useRef({
-    rotY:    (180 - JAKARTA_LON) * DEG,  // start so Jakarta faces viewer
-    rotX:    JAKARTA_LAT * DEG * 0.4,
-    velY:    0,
-    velX:    0,
+
+  const stateRef = useRef({
+    rotY: (180 - JAKARTA_LON) * DEG, // Face Jakarta towards viewer at start
+    rotX: JAKARTA_LAT * DEG * 0.4,
+    velY: 0,
+    velX: 0,
     dragging: false,
-    lastMX:  0,
-    lastMY:  0,
-    paused:  false,
-    raf:     0,
+    lastMX: 0,
+    lastMY: 0,
+    paused: false,
+    raf: 0,
   })
 
-  // Measure container dimensions reactively
+  // Measure container dimensions
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
@@ -213,7 +92,7 @@ export function GlobeCanvas({ className = '' }: GlobeCanvasProps) {
     const updateSizing = () => {
       const w = window.innerWidth
       setIsMobile(w < 768)
-      
+
       const width = container.clientWidth
       const height = container.clientHeight
       const side = Math.min(width, height) || 300
@@ -231,7 +110,6 @@ export function GlobeCanvas({ className = '' }: GlobeCanvasProps) {
     }
   }, [])
 
-  // Canonical render function stored in ref so event handlers always get fresh
   const drawRef = useRef<() => void>(() => {})
 
   const draw = useCallback(() => {
@@ -243,135 +121,186 @@ export function GlobeCanvas({ className = '' }: GlobeCanvasProps) {
     const W = canvas.width
     const H = canvas.height
     const dpr = window.devicePixelRatio || 1
-    const r   = (size / 2) * dpr * 0.96
-    const cx  = W / 2
-    const cy  = H / 2
-    const s   = stateRef.current
+    const r = (size / 2) * dpr * 0.94
+    const cx = W / 2
+    const cy = H / 2
+    const s = stateRef.current
+    const t = performance.now() / 1000
 
     ctx.clearRect(0, 0, W, H)
 
-    // ---- Atmosphere glow ----
-    const glowR = r * 1.15
-    const grad = ctx.createRadialGradient(cx, cy, r * 0.94, cx, cy, glowR)
-    grad.addColorStop(0, 'rgba(203,166,247,0.06)') // Softer, more subtle glow
-    grad.addColorStop(1, 'rgba(203,166,247,0)')
+    // 1. Atmosphere radial gradient backing
+    const glowR = r * 1.14
+    const atmosphereGrad = ctx.createRadialGradient(cx, cy, r * 0.9, cx, cy, glowR)
+    atmosphereGrad.addColorStop(0, CLR_GLOW)
+    atmosphereGrad.addColorStop(1, 'rgba(203, 166, 247, 0)')
     ctx.beginPath()
     ctx.arc(cx, cy, glowR, 0, Math.PI * 2)
-    ctx.fillStyle = grad
+    ctx.fillStyle = atmosphereGrad
     ctx.fill()
 
-    // ---- Sphere base ----
+    // 2. Dark glass-like sphere base backing
     ctx.beginPath()
     ctx.arc(cx, cy, r, 0, Math.PI * 2)
     ctx.fillStyle = CLR_SPHERE_BG
     ctx.fill()
 
-    // ---- Clip to sphere ----
-    ctx.save()
-    ctx.beginPath()
-    ctx.arc(cx, cy, r, 0, Math.PI * 2)
-    ctx.clip()
+    // 3. Render Lat/Lon wireframe lines
+    // We split rendering into back-face and front-face lines to create a perfect depth illusion
+    const steps = isMobile ? 8 : 12 // meridian/parallel frequency
+    const pointStep = isMobile ? 8 : 4 // drawing resolution
 
-    // ---- Lat/Lon grid (Thinner grid lines) ----
-    ctx.strokeStyle = CLR_GRID
-    ctx.lineWidth = 0.35 // Thinner and more elegant
+    const drawGridLines = (drawBack: boolean) => {
+      ctx.lineWidth = drawBack ? 0.35 * dpr : 0.65 * dpr
+      
+      // Latitude Parallels
+      for (let i = 1; i < steps; i++) {
+        const lat = -90 + (180 / steps) * i
+        ctx.beginPath()
+        let first = true
+        
+        for (let lon = -180; lon <= 180; lon += pointStep) {
+          const [gx, gy, gz] = project(...latLonToXYZ(lat, lon, r), s.rotY, s.rotX, cx, cy)
+          
+          const isFront = gz >= 0
+          if (drawBack && isFront) { first = true; continue }
+          if (!drawBack && !isFront) { first = true; continue }
 
-    const pointStep = isMobile ? 6 : 3
-    const dots = isMobile ? LAND_DOTS_MOBILE : LAND_DOTS
+          if (first) {
+            ctx.moveTo(gx, gy)
+            first = false
+          } else {
+            ctx.lineTo(gx, gy)
+          }
+        }
+        ctx.strokeStyle = drawBack ? CLR_GRID : CLR_GRID_FRONT
+        ctx.stroke()
+      }
 
-    // Latitude lines every 30°
-    for (let lat = -60; lat <= 60; lat += 30) {
+      // Longitude Meridians
+      for (let i = 0; i < steps; i++) {
+        const lon = -180 + (360 / steps) * i
+        ctx.beginPath()
+        let first = true
+
+        for (let lat = -90; lat <= 90; lat += pointStep) {
+          const [gx, gy, gz] = project(...latLonToXYZ(lat, lon, r), s.rotY, s.rotX, cx, cy)
+
+          const isFront = gz >= 0
+          if (drawBack && isFront) { first = true; continue }
+          if (!drawBack && !isFront) { first = true; continue }
+
+          if (first) {
+            ctx.moveTo(gx, gy)
+            first = false
+          } else {
+            ctx.lineTo(gx, gy)
+          }
+        }
+        ctx.strokeStyle = drawBack ? CLR_GRID : CLR_GRID_FRONT
+        ctx.stroke()
+      }
+    };
+
+    // Draw grid back-face (behind sphere)
+    drawGridLines(true)
+
+    // 4. Draw tilted orbital telemetry track paths
+    const orbits = [
+      { tilt: 28 * DEG, speed: 0.8, offset: 0 },
+      { tilt: -35 * DEG, speed: -0.6, offset: Math.PI / 2 },
+      { tilt: 72 * DEG, speed: 1.1, offset: Math.PI },
+    ]
+
+    orbits.forEach((orbit, oIdx) => {
+      // Draw complete orbit track
       ctx.beginPath()
+      ctx.strokeStyle = CLR_ORBIT
+      ctx.lineWidth = 0.5 * dpr
+      ctx.setLineDash([3 * dpr, 5 * dpr])
+      
       let first = true
-      for (let lon = -180; lon <= 180; lon += pointStep) {
-        const [gx, gy, gz] = project(...latLonToXYZ(lat, lon, r), s.rotY, s.rotX, cx, cy)
-        if (gz < 0) { first = true; continue }
-        if (first) { ctx.moveTo(gx, gy); first = false }
-        else ctx.lineTo(gx, gy)
+      for (let angle = 0; angle <= Math.PI * 2 + 0.1; angle += 0.05) {
+        const [ox, oy, oz] = project(...getOrbitXYZ(angle, orbit.tilt, r * 1.02), s.rotY, s.rotX, cx, cy)
+        
+        if (first) {
+          ctx.moveTo(ox, oy)
+          first = false
+        } else {
+          ctx.lineTo(ox, oy)
+        }
       }
       ctx.stroke()
-    }
+      ctx.setLineDash([])
 
-    // Longitude lines every 30°
-    for (let lon = -180; lon < 180; lon += 30) {
-      ctx.beginPath()
-      let first = true
-      for (let lat = -90; lat <= 90; lat += pointStep) {
-        const [gx, gy, gz] = project(...latLonToXYZ(lat, lon, r), s.rotY, s.rotX, cx, cy)
-        if (gz < 0) { first = true; continue }
-        if (first) { ctx.moveTo(gx, gy); first = false }
-        else ctx.lineTo(gx, gy)
+      // Draw sliding packet tracer along the orbit
+      const packetAngle = t * orbit.speed + orbit.offset
+      const [px, py, pz] = project(...getOrbitXYZ(packetAngle, orbit.tilt, r * 1.02), s.rotY, s.rotX, cx, cy)
+      const pFront = pz >= 0
+
+      if (pFront) {
+        // Outer glow
+        ctx.beginPath()
+        ctx.arc(px, py, 4 * dpr, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(137, 180, 250, 0.3)`
+        ctx.fill()
+        
+        // Inner core
+        ctx.beginPath()
+        ctx.arc(px, py, 2 * dpr, 0, Math.PI * 2)
+        ctx.fillStyle = CLR_PACKET
+        ctx.fill()
       }
+    })
+
+    // Draw grid front-face (in front of sphere backing)
+    drawGridLines(false)
+
+    // 5. Draw Target Marker (Jakarta, ID)
+    const [jx, jy, jz] = project(...latLonToXYZ(JAKARTA_LAT, JAKARTA_LON, r), s.rotY, s.rotX, cx, cy)
+    const isMarkerFront = jz >= 0
+
+    if (isMarkerFront) {
+      // Pulse telemetry circles
+      const pulse = 0.5 + 0.5 * Math.sin(t * 3.5)
+      
+      ctx.beginPath()
+      ctx.arc(jx, jy, 8 * dpr + pulse * 4 * dpr, 0, Math.PI * 2)
+      ctx.strokeStyle = `rgba(166, 227, 161, ${0.4 - pulse * 0.3})`
+      ctx.lineWidth = 0.8 * dpr
       ctx.stroke()
-    }
 
-    ctx.restore()
-
-    // ---- Sphere outline ring ----
-    ctx.beginPath()
-    ctx.arc(cx, cy, r, 0, Math.PI * 2)
-    ctx.strokeStyle = 'rgba(69,71,90,0.45)'
-    ctx.lineWidth = 0.8
-    ctx.stroke()
-
-    // ---- Land dots (Depth of Field effect) ----
-    const dotR = Math.max(1.2, r / 95) * dpr * 0.65
-    for (const [lat, lon] of dots) {
-      const [dx, dy, dz] = project(...latLonToXYZ(lat, lon, r), s.rotY, s.rotX, cx, cy)
-      // Cull points outside sphere
-      const distSq = (dx - cx) ** 2 + (dy - cy) ** 2
-      if (distSq > r * r) continue
-
-      const isFront = dz >= 0
-      
-      // Calculate dot size and opacity based on depth (dz)
-      const depthFactor = (dz + r) / (2 * r) // 0 to 1
-      const dotOpacity = isFront ? 0.3 + 0.65 * depthFactor : 0.06 + 0.12 * depthFactor
-      const currentDotR = dotR * (0.8 + 0.35 * depthFactor)
-
+      // Core point
       ctx.beginPath()
-      ctx.arc(dx, dy, currentDotR, 0, Math.PI * 2)
-      ctx.fillStyle = isFront 
-        ? `rgba(203, 166, 247, ${dotOpacity})` 
-        : `rgba(203, 166, 247, ${dotOpacity})`
-      ctx.fill()
-    }
-
-    // ---- Jakarta marker ----
-    const [jx, jy, jz] = project(
-      ...latLonToXYZ(JAKARTA_LAT, JAKARTA_LON, r),
-      s.rotY, s.rotX, cx, cy,
-    )
-    const jDistSq = (jx - cx) ** 2 + (jy - cy) ** 2
-    if (jz >= 0 && jDistSq < r * r) {
-      // Refined pulsing marker
-      const t  = performance.now() / 1000
-      const pulse = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(t * 2.5))
-      const pulseR = (r / 28) * (1.3 + pulse)
-      ctx.beginPath()
-      ctx.arc(jx, jy, pulseR, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(166,227,161,${0.12 * pulse})`
-      ctx.fill()
-      
-      ctx.beginPath()
-      ctx.arc(jx, jy, r / 34, 0, Math.PI * 2)
-      ctx.fillStyle = `rgba(166,227,161,${0.25 + 0.1 * pulse})`
-      ctx.fill()
-      
-      ctx.beginPath()
-      ctx.arc(jx, jy, r / 58, 0, Math.PI * 2)
+      ctx.arc(jx, jy, 2.5 * dpr, 0, Math.PI * 2)
       ctx.fillStyle = CLR_MARKER
       ctx.fill()
+
+      // Monospace label coordinates
+      ctx.fillStyle = CLR_MARKER
+      ctx.font = `bold ${8 * dpr}px var(--font-mono)`
+      ctx.fillText(`TARGET: JAKARTA`, jx + 8 * dpr, jy - 3 * dpr)
+      ctx.fillStyle = 'rgba(205, 214, 244, 0.65)'
+      ctx.font = `${6.5 * dpr}px var(--font-mono)`
+      ctx.fillText(`${JAKARTA_LAT.toFixed(4)}S, ${JAKARTA_LON.toFixed(4)}E`, jx + 8 * dpr, jy + 5 * dpr)
     }
+
+    // 6. Draw clean outer aesthetic frame ring
+    ctx.beginPath()
+    ctx.arc(cx, cy, r, 0, Math.PI * 2)
+    ctx.strokeStyle = 'rgba(108, 112, 134, 0.4)'
+    ctx.lineWidth = 0.8 * dpr
+    ctx.stroke()
+
   }, [size, isMobile])
 
   drawRef.current = draw
 
-  // ---- Animation loop ----
+  // Animation ticks
   useEffect(() => {
     const s = stateRef.current
     const mediaQuery = typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null
-    const AUTO_SPEED = mediaQuery?.matches ? 0 : (2 * Math.PI) / 35000  // full rotation every ~35s
+    const AUTO_SPEED = mediaQuery?.matches ? 0 : (2 * Math.PI) / 45000 // slow spin every 45s
 
     let last = 0
     const loop = (ts: number) => {
@@ -387,7 +316,7 @@ export function GlobeCanvas({ className = '' }: GlobeCanvasProps) {
         s.velX *= 0.92
         s.rotY += s.velY
         s.rotX += s.velX
-        // Clamp X tilt
+        // Clamp latitude tilt
         s.rotX = Math.max(-0.45, Math.min(0.45, s.rotX))
       }
 
@@ -398,7 +327,7 @@ export function GlobeCanvas({ className = '' }: GlobeCanvasProps) {
     return () => cancelAnimationFrame(s.raf)
   }, [])
 
-  // ---- Pointer interactions ----
+  // Grab & drag listener binding
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -407,11 +336,11 @@ export function GlobeCanvas({ className = '' }: GlobeCanvasProps) {
 
     const onPointerDown = (e: PointerEvent) => {
       s.dragging = true
-      s.paused   = true
-      s.velY     = 0
-      s.velX     = 0
-      s.lastMX   = e.clientX
-      s.lastMY   = e.clientY
+      s.paused = true
+      s.velY = 0
+      s.velX = 0
+      s.lastMX = e.clientX
+      s.lastMY = e.clientY
       canvas.setPointerCapture(e.pointerId)
     }
 
@@ -422,7 +351,7 @@ export function GlobeCanvas({ className = '' }: GlobeCanvasProps) {
       s.lastMX = e.clientX
       s.lastMY = e.clientY
 
-      const sensitivity = (Math.PI / (size * effectiveDpr)) * (isMobile ? 2.4 : 1.8)
+      const sensitivity = (Math.PI / (size * effectiveDpr)) * 1.8
       s.rotY += dx * sensitivity
       s.rotX += dy * sensitivity
       s.rotX = Math.max(-0.45, Math.min(0.45, s.rotX))
@@ -444,25 +373,19 @@ export function GlobeCanvas({ className = '' }: GlobeCanvasProps) {
       s.paused = false
     }
 
-    const onLostPointerCapture = () => {
-      s.dragging = false
-    }
-
     canvas.addEventListener('pointerdown', onPointerDown)
     canvas.addEventListener('pointermove', onPointerMove)
     canvas.addEventListener('pointerup', onPointerUp)
     canvas.addEventListener('pointercancel', onPointerCancel)
-    canvas.addEventListener('lostpointercapture', onLostPointerCapture)
+    
     return () => {
       canvas.removeEventListener('pointerdown', onPointerDown)
       canvas.removeEventListener('pointermove', onPointerMove)
       canvas.removeEventListener('pointerup', onPointerUp)
       canvas.removeEventListener('pointercancel', onPointerCancel)
-      canvas.removeEventListener('lostpointercapture', onLostPointerCapture)
     }
   }, [size, isMobile])
 
-  // ---- DPR-aware sizing ----
   const dpr = typeof window !== 'undefined'
     ? (isMobile ? Math.min(window.devicePixelRatio || 1, 1.5) : (window.devicePixelRatio || 1))
     : 1
@@ -476,7 +399,7 @@ export function GlobeCanvas({ className = '' }: GlobeCanvasProps) {
         height={canvasPx}
         className={className}
         style={{ width: size, height: size, cursor: 'grab', touchAction: 'none' }}
-        aria-label="Interactive 3D wireframe globe showing Jakarta, Indonesia"
+        aria-label="Interactive 3D wireframe telemetry globe"
         role="img"
       />
     </div>

@@ -23,6 +23,12 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
     const rotX = -(y / (rect.height / 2)) * 6
     const rotY = (x / (rect.width / 2)) * 6
     setTilt({ x: rotX, y: rotY })
+
+    // Spotlight coordinates (relative to card top-left)
+    const mouseX = e.clientX - rect.left
+    const mouseY = e.clientY - rect.top
+    card.style.setProperty('--mouse-x', `${mouseX}px`)
+    card.style.setProperty('--mouse-y', `${mouseY}px`)
   }
 
   const handleMouseLeave = () => {
@@ -38,7 +44,8 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={handleMouseLeave}
-      className={`relative rounded-xl overflow-hidden flex flex-col transition-all duration-300 cursor-none select-none ${
+      data-cursor="VIEW"
+      className={`relative rounded-xl overflow-hidden flex flex-col transition-all duration-300 cursor-none select-none spotlight-card ${
         project.featured ? 'md:col-span-2 lg:col-span-2' : 'col-span-1'
       }`}
       style={{
@@ -50,8 +57,10 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         boxShadow: hovered
           ? `0 12px 30px color-mix(in srgb, ${project.accentColor} 12%, transparent)`
           : '0 4px 12px rgba(0,0,0,0.2)',
-      }}
+        '--spotlight-color': `color-mix(in srgb, ${project.accentColor} 14%, transparent)`,
+      } as React.CSSProperties}
     >
+      <div className="spotlight-card-content flex flex-col flex-grow h-full w-full">
       {/* ── Decorative Cyber Header ────────────────────────────────────────── */}
       <div 
         className="h-28 w-full relative overflow-hidden transition-all duration-300 flex items-center justify-center"
@@ -124,6 +133,38 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           <p className="text-xs leading-relaxed text-[#a6adc8] mb-5" style={{ lineHeight: 1.65 }}>
             {project.description}
           </p>
+
+          {/* Field Note HUD block (expanded on hover) */}
+          {project.fieldNote && (
+            <div 
+              className={`font-mono text-[9px] border border-dashed rounded p-2.5 mb-5 bg-[#11111b]/40 overflow-hidden transition-all duration-300 ${
+                hovered ? 'max-h-24 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-1 pointer-events-none'
+              }`}
+              style={{ 
+                borderColor: hovered ? `color-mix(in srgb, ${project.accentColor} 40%, #313244)` : '#313244',
+                color: '#a6adc8'
+              }}
+            >
+              <div className="flex justify-between border-b border-[#313244]/40 pb-1 mb-1 font-bold" style={{ color: project.accentColor }}>
+                <span>PROJECT INFO // TRACER</span>
+                <span>STATUS: ACTIVE</span>
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <div className="flex justify-between">
+                  <span style={{ color: '#7f849c' }}>CORE ARCH:</span>
+                  <span style={{ color: '#cdd6f4' }}>{project.fieldNote.terrain}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span style={{ color: '#7f849c' }}>PRIMARY DEPLOY:</span>
+                  <span style={{ color: '#cdd6f4' }}>{project.fieldNote.route}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span style={{ color: '#7f849c' }}>SYSTEM STATUS:</span>
+                  <span style={{ color: project.accentColor }}>{project.fieldNote.signal}</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         <div>
@@ -187,6 +228,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           </div>
         </div>
       </div>
+      </div>
     </div>
   )
 }
@@ -205,12 +247,12 @@ export function ProjectsSection() {
         <Reveal delay={0.05} direction="up">
           {/* Section label */}
           <div className="flex items-center gap-3 mb-4">
-            <span className="section-label">// projects</span>
+            <span className="section-label">// fieldwork</span>
             <div className="flex-1 h-px" style={{ backgroundColor: '#313244' }} />
           </div>
 
           <p className="font-mono text-xs mb-10 text-[#6c7086]">
-            things I&apos;ve built — some shipped, some experiments, all crafted with care
+            field notes from systems and applications I&apos;ve mapped, built, and refined
           </p>
 
           {/* Project grid */}

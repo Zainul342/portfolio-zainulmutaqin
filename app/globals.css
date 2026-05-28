@@ -112,7 +112,12 @@
 
   html {
     scroll-behavior: smooth;
-    cursor: none;
+  }
+
+  /* Dynamically hide browser cursor when custom cursor is active on desktop */
+  .custom-cursor-active,
+  .custom-cursor-active * {
+    cursor: none !important;
   }
 
   body {
@@ -233,8 +238,7 @@
   pointer-events: none;
   position: fixed;
   z-index: 9999;
-  mix-blend-mode: difference;
-  transition: transform 0.1s ease;
+  transition: width 0.15s ease, height 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
 }
 
 /* Scroll progress */
@@ -294,3 +298,164 @@
     animation: none;
   }
 }
+
+/* Floating gradient orbs for organic depth in hero section */
+@keyframes orb-float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.12);
+  }
+  66% {
+    transform: translate(-35px, 25px) scale(0.92);
+  }
+}
+
+.gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 0;
+  animation: orb-float 22s ease-in-out infinite;
+}
+
+/* CSS-only premium animated gradient border */
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes spin {
+  0% {
+    --border-angle: 0deg;
+  }
+  100% {
+    --border-angle: 360deg;
+  }
+}
+
+.glow-card {
+  position: relative;
+  background: #181825; /* var(--ctp-mantle) */
+  border-radius: 8px;
+}
+
+.glow-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent 15%,
+    var(--ctp-mauve) 35%,
+    var(--ctp-blue) 55%,
+    transparent 75%
+  );
+  animation: spin 6s linear infinite;
+  z-index: -1;
+  opacity: 0.55;
+  transition: opacity 0.3s ease;
+}
+
+.glow-card:hover::before {
+  opacity: 0.85;
+}
+
+.glow-card::after {
+  content: "";
+  position: absolute;
+  inset: 0px;
+  border-radius: inherit;
+  background: #181825;
+  z-index: -1;
+}
+
+@keyframes cursor-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cursor-ripple {
+  0% {
+    transform: scale(0.1);
+    opacity: 0.85;
+    border-color: var(--ctp-mauve);
+  }
+  50% {
+    border-color: var(--ctp-blue);
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+    border-color: var(--ctp-green);
+  }
+}
+
+/* Spotlight Hover Card Effect */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    300px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+    var(--spotlight-color, rgba(203, 166, 247, 0.08)),
+    transparent 80%
+  );
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+
+.spotlight-card-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Screen Lens / CRT overlay */
+.crt-lens {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: radial-gradient(
+    circle at center,
+    transparent 60%,
+    rgba(24, 24, 37, 0.22) 100%
+  );
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.32);
+}
+
+.crt-lens::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.05) 50%
+  );
+  background-size: 100% 4px;
+  opacity: 0.65;
+  z-index: 10000;
+}
+

@@ -13,16 +13,16 @@ export default function Portfolio() {
         <HeroSection />
 
         {/* Divider */}
-        <SectionDivider label="// about" />
+        <SectionDivider label="// 01. about" accentColor="var(--ctp-mauve)" />
         <BentoSection />
 
-        <SectionDivider label="// experience" />
+        <SectionDivider label="// 02. experience" accentColor="var(--ctp-blue)" />
         <ExperienceSection />
 
-        <SectionDivider label="// projects" />
+        <SectionDivider label="// 03. projects" accentColor="var(--ctp-green)" />
         <ProjectsSection />
 
-        <SectionDivider label="// contact" />
+        <SectionDivider label="// 04. contact" accentColor="var(--ctp-teal)" />
         <ContactSection />
       </main>
     </ClientShell>

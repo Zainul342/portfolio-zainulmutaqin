@@ -41,10 +41,8 @@ export function ClientShell({ children }: ClientShellProps) {
 
   return (
     <>
-      {/* Custom cursor — desktop only */}
-      <div className="hidden md:block">
-        <CustomCursor />
-      </div>
+      {/* Custom cursor — auto-enabled on non-touch desktop systems */}
+      <CustomCursor />
 
       {/* Scroll progress indicator */}
       <ScrollProgress />

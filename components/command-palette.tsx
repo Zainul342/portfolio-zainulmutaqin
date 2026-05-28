@@ -132,6 +132,17 @@ function buildCommands(onClose: () => void, setEasterEgg: (key: string) => void)
       action: () => scrollTo('contact'),
     },
     {
+      id: 'nav-blog',
+      label: 'go to blog',
+      description: 'Read articles and writeups',
+      category: 'navigate',
+      icon: <Hash size={14} />,
+      action: () => {
+        window.location.href = '/blog'
+        onClose()
+      },
+    },
+    {
       id: 'action-github',
       label: 'open github',
       description: 'github.com/Zainul342',
@@ -201,6 +212,17 @@ function buildCommands(onClose: () => void, setEasterEgg: (key: string) => void)
       icon: <Terminal size={14} />,
       action: () => setEasterEgg('hack-planet'),
       easterEgg: EASTER_EGGS['hack-planet'],
+    },
+    {
+      id: 'easter-globe',
+      label: 'globe',
+      description: 'Toggle wireframe telemetry globe easter egg',
+      category: 'easter',
+      icon: <Globe size={14} />,
+      action: () => {
+        window.dispatchEvent(new CustomEvent('toggle-globe'))
+        onClose()
+      },
     },
   ]
 }

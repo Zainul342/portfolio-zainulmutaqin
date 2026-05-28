@@ -3,6 +3,12 @@ export interface ProjectStackItem {
   color?: string
 }
 
+export interface ProjectFieldNote {
+  terrain: string
+  route: string
+  signal: string
+}
+
 export interface Project {
   id: string
   slug: string
@@ -19,6 +25,7 @@ export interface Project {
   demo?: string
   featured?: boolean
   accentColor: string
+  fieldNote?: ProjectFieldNote
 }
 
 export const PROJECTS: Project[] = [
@@ -46,6 +53,11 @@ export const PROJECTS: Project[] = [
     demo: 'https://domcy-coffee.vercel.app',
     featured: true,
     accentColor: '#f9e2af',
+    fieldNote: {
+      terrain: 'Full-Stack Commerce',
+      route: 'Next.js App Router',
+      signal: 'Operational Beacon'
+    }
   },
   {
     id: 'cinevault',
@@ -69,6 +81,11 @@ export const PROJECTS: Project[] = [
     ],
     github: 'https://github.com/Zainul342',
     accentColor: '#cba6f7',
+    fieldNote: {
+      terrain: 'PHP Core Database',
+      route: 'Native SSR Grid',
+      signal: 'Local Server Link'
+    }
   },
   {
     id: 'studyflow',
@@ -92,6 +109,11 @@ export const PROJECTS: Project[] = [
     github: 'https://github.com/Zainul342',
     demo: 'https://snbtflow.vercel.app',
     accentColor: '#a6e3a1',
+    fieldNote: {
+      terrain: 'Client React State',
+      route: 'SNBT Prep Timeline',
+      signal: 'Cache Persistence'
+    }
   },
   {
     id: 'weather-dashboard',
@@ -113,6 +135,11 @@ export const PROJECTS: Project[] = [
     ],
     github: 'https://github.com/Zainul342',
     accentColor: '#89b4fa',
+    fieldNote: {
+      terrain: 'REST API Telemetry',
+      route: 'OpenWeather Direct',
+      signal: 'API Active Connection'
+    }
   },
   {
     id: 'ai-context-pro',
@@ -134,6 +161,11 @@ export const PROJECTS: Project[] = [
     ],
     github: 'https://github.com/Zainul342',
     accentColor: '#cba6f7',
+    fieldNote: {
+      terrain: 'Token Parser Systems',
+      route: 'AST Parse Crawler',
+      signal: 'Operational Command'
+    }
   },
   {
     id: 'diskdiet',
@@ -155,6 +187,11 @@ export const PROJECTS: Project[] = [
     ],
     github: 'https://github.com/Zainul342',
     accentColor: '#f38ba8',
+    fieldNote: {
+      terrain: 'OS Auditing Tool',
+      route: 'Shell Scripting Root',
+      signal: 'Root Terminal Active'
+    }
   },
 ]
 

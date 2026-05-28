@@ -62,7 +62,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="font-sans antialiased bg-[#1e1e2e] text-[#cdd6f4]">
+      <body className="font-sans antialiased bg-[#1e1e2e] text-[#cdd6f4] noise-overlay min-h-screen relative">
+        <div className="crt-lens" aria-hidden="true" />
         <JsonLd />
         {children}
         {/* Widjet (widjet.com) embed */}
