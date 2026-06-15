@@ -54,7 +54,7 @@ export function HeroSection() {
   if (!mounted) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
-        <div className="w-full max-w-xl mx-auto bg-[#0a0a0a] border border-white/5 rounded-lg h-48 animate-pulse" />
+        <div className="w-full max-w-xl mx-auto bg-[#0a0a0a] border border-white/10 rounded-none h-48 animate-pulse" />
       </div>
     )
   }
@@ -97,23 +97,18 @@ export function HeroSection() {
         <div className="flex flex-col items-center w-full">
           {/* Terminal window */}
           <div
-            className="w-full max-w-xl rounded-lg overflow-hidden mb-10 glow-card border border-white/5"
+            className="w-full max-w-xl rounded-none overflow-hidden mb-10 border border-white/10 bg-[#0a0a0a]"
           >
             {/* Minimal Tiling Window Header */}
-            <div className="flex items-center justify-between px-4 py-2.5 bg-[#08080a] border-b border-white/5 select-none">
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#cba6f7]" aria-hidden="true" />
-                <span className="font-mono text-xs text-[#a6adc8] font-medium">zainul@thinkpad:~</span>
-              </div>
-              <div className="font-mono text-[10px] text-[#6c7086] flex items-center gap-3">
-                <span>80x24</span>
-                <span>bspwm</span>
-              </div>
+            <div className="flex items-center justify-between px-4 py-2 bg-[#121212] border-b border-white/10 select-none font-mono text-[11px] text-[#89b4fa]">
+              <div className="w-12 text-left text-[#585b70]">ghostty</div>
+              <div className="flex-1 text-center text-[#a6adc8]">zainul@archlinux:~</div>
+              <div className="w-12 text-right text-[#585b70]">80x24</div>
             </div>
 
             {/* Terminal body */}
             <div
-              className="p-5 font-mono text-sm leading-relaxed min-h-[128px] text-left w-full space-y-1"
+              className="p-5 font-mono text-[13px] leading-relaxed min-h-[128px] text-left w-full space-y-1"
               aria-live="polite"
               aria-label="Terminal boot sequence"
             >
@@ -147,7 +142,7 @@ export function HeroSection() {
                             },
                             delay: delayTime + 0.4,
                           }}
-                          className="text-[#a6e3a1] font-bold inline-block ml-1"
+                          className="text-[#a6e3a1] font-bold inline-block ml-1 font-mono"
                         >
                           _
                         </motion.span>
