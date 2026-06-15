@@ -30,31 +30,9 @@ const BOOT_LINES = [
   { text: '> session active. ready.', color: '#a6e3a1' },
 ]
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.8,
-    }
-  }
-}
-
-const lineVariants = {
-  hidden: { opacity: 0, y: 4 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.35,
-      ease: [0.16, 1, 0.3, 1],
-    }
-  }
-}
-
 export function HeroSection() {
   const [done, setDone] = useState(false)
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [resetKey, setResetKey] = useState(0)
+  const [visibleLinesCount, setVisibleLinesCount] = useState(0)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
   
   const [revealed, setRevealed] = useState(false)
@@ -68,10 +46,26 @@ export function HeroSection() {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
       setPrefersReducedMotion(mediaQuery.matches)
       if (mediaQuery.matches) {
+        setVisibleLinesCount(BOOT_LINES.length)
         setDone(true)
       }
     }
   }, [])
+
+  // Timer sequence to animate lines one by one
+  useEffect(() => {
+    if (prefersReducedMotion) return
+
+    if (visibleLinesCount < BOOT_LINES.length) {
+      const delay = visibleLinesCount === 0 ? 200 : 800
+      const timer = setTimeout(() => {
+        setVisibleLinesCount((prev) => prev + 1)
+      }, delay)
+      return () => clearTimeout(timer)
+    } else {
+      setDone(true)
+    }
+  }, [visibleLinesCount, prefersReducedMotion])
 
   useEffect(() => {
     if (done) {
@@ -92,10 +86,9 @@ export function HeroSection() {
         }
       }
 
-      // Loop sequence
+      // Loop sequence reset
       const loopTimer = setTimeout(() => {
-        setResetKey(prev => prev + 1)
-        setActiveIndex(0)
+        setVisibleLinesCount(0)
         setDone(false)
       }, 5500)
       return () => clearTimeout(loopTimer)
@@ -153,44 +146,44 @@ export function HeroSection() {
 
             {/* Terminal body */}
             <div
-              className="p-5 font-mono text-sm leading-relaxed min-h-[128px] text-left w-full"
+              className="p-5 font-mono text-sm leading-relaxed min-h-[128px] text-left w-full space-y-1"
               aria-live="polite"
               aria-label="Terminal boot sequence"
             >
-              {prefersReducedMotion ? (
-                BOOT_LINES.map((line, idx) => (
-                  <div key={idx} className="mb-1" style={{ color: line.color }}>
-                    {line.text}
-                    {idx === BOOT_LINES.length - 1 && (
-                      <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
+              {BOOT_LINES.map((line, idx) => {
+                const isVisible = prefersReducedMotion || visibleLinesCount > idx
+                const isCurrent = prefersReducedMotion 
+                  ? idx === BOOT_LINES.length - 1 
+                  : visibleLinesCount === idx + 1
+                const isLastLine = idx === BOOT_LINES.length - 1
+
+                return (
+                  <div key={idx} className="min-h-[20px] mb-1">
+                    {isVisible && (
+                      prefersReducedMotion ? (
+                        <div style={{ color: line.color }}>
+                          {line.text}
+                          {isCurrent && (
+                            <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
+                          )}
+                        </div>
+                      ) : (
+                        <motion.div
+                          initial={{ opacity: 0, y: 4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                          style={{ color: line.color }}
+                        >
+                          {line.text}
+                          {((isCurrent && !done) || (isLastLine && done)) && (
+                            <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
+                          )}
+                        </motion.div>
+                      )
                     )}
                   </div>
-                ))
-              ) : (
-                <motion.div
-                  key={resetKey}
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                  onAnimationComplete={() => setDone(true)}
-                  className="space-y-1"
-                >
-                  {BOOT_LINES.map((line, idx) => (
-                    <motion.div
-                      key={idx}
-                      variants={lineVariants}
-                      onAnimationStart={() => setActiveIndex(idx)}
-                      className="min-h-[20px]"
-                      style={{ color: line.color }}
-                    >
-                      {line.text}
-                      {((activeIndex === idx && !done) || (idx === BOOT_LINES.length - 1 && done)) && (
-                        <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
-                      )}
-                    </motion.div>
-                  ))}
-                </motion.div>
-              )}
+                )
+              })}
             </div>
           </div>
 
