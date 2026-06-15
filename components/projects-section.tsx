@@ -52,7 +52,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         backgroundColor: '#181825',
         border: `1px solid ${hovered ? project.accentColor : '#313244'}`,
         transform: hovered && !isReducedMotion
-          ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-4px)`
+          ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-6px)`
           : 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)',
         boxShadow: hovered
           ? `0 12px 30px color-mix(in srgb, ${project.accentColor} 12%, transparent)`

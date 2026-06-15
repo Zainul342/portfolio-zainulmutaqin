@@ -229,7 +229,7 @@
   height: 1.1em;
   background-color: var(--ctp-mauve);
   vertical-align: text-bottom;
-  animation: blink 1s step-end infinite;
+  animation: blink 1.2s step-end infinite;
   margin-left: 2px;
 }
 
@@ -342,6 +342,12 @@
   position: relative;
   background: #181825; /* var(--ctp-mantle) */
   border-radius: 8px;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.glow-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
 }
 
 .glow-card::before {
@@ -373,6 +379,32 @@
   border-radius: inherit;
   background: #181825;
   z-index: -1;
+}
+
+/* Contact Card Hover Lift */
+.contact-card {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  border-color: var(--ctp-mauve) !important;
+}
+
+/* Hero Cursor-Reactive Glow Overlay */
+.hero-radial-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(203, 166, 247, 0.08),
+    transparent 80%
+  );
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
 }
 
 @keyframes cursor-rotate {

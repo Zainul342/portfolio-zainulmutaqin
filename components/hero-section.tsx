@@ -69,7 +69,14 @@ function useTypewriter(lines: typeof BOOT_LINES) {
     }
     if (currentLineIndex >= lines.length) {
       setDone(true)
-      return
+      // Pause for 5.5s at the end of the sequence, then reset (Total cycle ~8 seconds)
+      const loopTimer = setTimeout(() => {
+        setDisplayedLines([])
+        setCurrentLineIndex(0)
+        setCurrentCharIndex(0)
+        setDone(false)
+      }, 5500)
+      return () => clearTimeout(loopTimer)
     }
 
     const line = lines[currentLineIndex]
@@ -100,7 +107,7 @@ function useTypewriter(lines: typeof BOOT_LINES) {
 
     return () => clearTimeout(lineTimer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentLineIndex, typingSpeed])
+  }, [currentLineIndex, typingSpeed, done])
 
   return { displayedLines, done }
 }
@@ -108,8 +115,10 @@ function useTypewriter(lines: typeof BOOT_LINES) {
 export function HeroSection() {
   const { displayedLines, done } = useTypewriter(BOOT_LINES)
   const [revealed, setRevealed] = useState(false)
+  const [hasRevealed, setHasRevealed] = useState(false)
   const [glitching, setGlitching] = useState(false)
   const [showGlobe, setShowGlobe] = useState(false)
+  const heroRef = useRef<HTMLDivElement>(null)
   const nameRef = useRef<HTMLHeadingElement>(null)
   const rightColRef = useRef<HTMLDivElement>(null)
 
@@ -121,7 +130,8 @@ export function HeroSection() {
   }, [])
 
   useEffect(() => {
-    if (done) {
+    if (done && !hasRevealed) {
+      setHasRevealed(true)
       if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         setRevealed(true)
         setGlitching(false)
@@ -136,9 +146,17 @@ export function HeroSection() {
       }, REVEAL_DELAY - 2400)
       return () => clearTimeout(t)
     }
-  }, [done])
+  }, [done, hasRevealed])
 
-
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const hero = heroRef.current
+    if (!hero) return
+    const rect = hero.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    hero.style.setProperty('--mouse-x', `${x}px`)
+    hero.style.setProperty('--mouse-y', `${y}px`)
+  }
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
@@ -147,9 +165,14 @@ export function HeroSection() {
   return (
     <section
       id="hero"
+      ref={heroRef}
+      onMouseMove={handleMouseMove}
       className="noise-overlay relative min-h-screen flex items-center overflow-hidden"
       aria-label="Hero"
     >
+      {/* Subtle mouse-reactive radial background glow */}
+      <div className="hero-radial-glow" aria-hidden="true" />
+
       {/* Subtle radial vignette */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -210,7 +233,7 @@ export function HeroSection() {
                   ) : null}
                 </div>
               ))}
-              {done && !revealed && <span className="terminal-cursor" aria-hidden="true" />}
+              {done && <span className="terminal-cursor" aria-hidden="true" />}
             </div>
           </div>
 
@@ -286,12 +309,10 @@ export function HeroSection() {
                   style={{ backgroundColor: '#cba6f7', color: '#1e1e2e' }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = '#d4b5f8'
-                    e.currentTarget.style.transform = 'translateY(-2px)'
                     e.currentTarget.style.boxShadow = '0 4px 20px rgba(203, 166, 247, 0.3)'
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = '#cba6f7'
-                    e.currentTarget.style.transform = 'translateY(0)'
                     e.currentTarget.style.boxShadow = 'none'
                   }}
                 >
@@ -307,12 +328,10 @@ export function HeroSection() {
                   style={{ backgroundColor: 'transparent', color: '#89b4fa', border: '1px solid #89b4fa' }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = 'rgba(137, 180, 250, 0.1)'
-                    e.currentTarget.style.transform = 'translateY(-2px)'
                     e.currentTarget.style.boxShadow = '0 4px 20px rgba(137, 180, 250, 0.15)'
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'transparent'
-                    e.currentTarget.style.transform = 'translateY(0)'
                     e.currentTarget.style.boxShadow = 'none'
                   }}
                 >

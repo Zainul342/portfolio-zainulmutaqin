@@ -95,12 +95,12 @@ export function ContactSection() {
 
         {/* Form */}
         <div
-          className="rounded-lg overflow-hidden transition-all duration-700"
+          className="contact-card rounded-lg overflow-hidden transition-all duration-700"
           style={{
             backgroundColor: '#181825',
             border: '1px solid #313244',
             opacity: visible ? 1 : 0,
-            transform: visible ? 'translateY(0)' : 'translateY(20px)',
+            transform: visible ? undefined : 'translateY(20px)',
             transitionDelay: '100ms',
           }}
         >
