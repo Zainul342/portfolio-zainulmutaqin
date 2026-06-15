@@ -98,14 +98,7 @@ export function BentoSection() {
       className="relative py-32 md:py-44 px-6 overflow-hidden"
       aria-label="About and Skills Mosaic"
     >
-      {/* Background radial gradient */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle at 70% 30%, rgba(203,166,247,0.03) 0%, transparent 60%)',
-        }}
-        aria-hidden="true"
-      />
+
 
       <div className="relative max-w-5xl mx-auto">
         <Reveal delay={0.05} direction="up">
@@ -115,10 +108,8 @@ export function BentoSection() {
             <div
               className="md:col-span-2 md:row-span-2 rounded-xl p-6 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                border: `1px solid ${activeCard === 'bio' ? '#cba6f7' : 'rgba(255, 255, 255, 0.06)'}`,
-                boxShadow: activeCard === 'bio' ? '0 8px 30px rgba(203, 166, 247, 0.05)' : 'none',
+                border: `1px solid ${activeCard === 'bio' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)'}`,
                 transform: activeCard === 'bio' ? 'translateY(-2px)' : 'translateY(0)',
-                '--spotlight-color': 'rgba(203, 166, 247, 0.12)',
               } as React.CSSProperties}
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setActiveCard('bio')}
@@ -155,10 +146,8 @@ export function BentoSection() {
             <div
               className="md:col-span-1 md:row-span-2 rounded-xl overflow-hidden flex flex-col justify-between transition-all duration-300 spotlight-card bento-card"
               style={{
-                border: `1px solid ${activeCard === 'terminal' ? '#a6e3a1' : 'rgba(255, 255, 255, 0.06)'}`,
-                boxShadow: activeCard === 'terminal' ? '0 8px 30px rgba(166, 227, 161, 0.05)' : 'none',
+                border: `1px solid ${activeCard === 'terminal' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)'}`,
                 transform: activeCard === 'terminal' ? 'translateY(-2px)' : 'translateY(0)',
-                '--spotlight-color': 'rgba(166, 227, 161, 0.12)',
               } as React.CSSProperties}
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setActiveCard('terminal')}
@@ -202,7 +191,7 @@ export function BentoSection() {
                     </div>
                     <div className="mt-3 flex items-center gap-1">
                       <span className="text-[#a6e3a1]">$</span>
-                      <span className="terminal-cursor" aria-hidden="true" />
+                      <span className="terminal-cursor text-[#a6e3a1] font-bold" aria-hidden="true">_</span>
                     </div>
                   </div>
                 </div>
@@ -213,10 +202,8 @@ export function BentoSection() {
             <div
               className="rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                border: `1px solid ${activeCard === 'location' ? '#89b4fa' : 'rgba(255, 255, 255, 0.06)'}`,
-                boxShadow: activeCard === 'location' ? '0 8px 30px rgba(137, 180, 250, 0.05)' : 'none',
+                border: `1px solid ${activeCard === 'location' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)'}`,
                 transform: activeCard === 'location' ? 'translateY(-2px)' : 'translateY(0)',
-                '--spotlight-color': 'rgba(137, 180, 250, 0.12)',
               } as React.CSSProperties}
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setActiveCard('location')}
@@ -241,10 +228,8 @@ export function BentoSection() {
             <div
               className="rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                border: `1px solid ${activeCard === 'setup' ? '#f9e2af' : 'rgba(255, 255, 255, 0.06)'}`,
-                boxShadow: activeCard === 'setup' ? '0 8px 30px rgba(249, 226, 175, 0.05)' : 'none',
+                border: `1px solid ${activeCard === 'setup' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)'}`,
                 transform: activeCard === 'setup' ? 'translateY(-2px)' : 'translateY(0)',
-                '--spotlight-color': 'rgba(249, 226, 175, 0.12)',
               } as React.CSSProperties}
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setActiveCard('setup')}
@@ -269,10 +254,8 @@ export function BentoSection() {
             <div
               className="md:col-span-1 rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                border: `1px solid ${activeCard === 'web-skills' ? '#89dceb' : 'rgba(255, 255, 255, 0.06)'}`,
-                boxShadow: activeCard === 'web-skills' ? '0 8px 30px rgba(137, 220, 235, 0.05)' : 'none',
+                border: `1px solid ${activeCard === 'web-skills' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)'}`,
                 transform: activeCard === 'web-skills' ? 'translateY(-2px)' : 'translateY(0)',
-                '--spotlight-color': 'rgba(137, 220, 235, 0.12)',
               } as React.CSSProperties}
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setActiveCard('web-skills')}
@@ -299,10 +282,8 @@ export function BentoSection() {
             <div
               className="md:col-span-1 rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                border: `1px solid ${activeCard === 'tool-skills' ? '#f38ba8' : 'rgba(255, 255, 255, 0.06)'}`,
-                boxShadow: activeCard === 'tool-skills' ? '0 8px 30px rgba(243, 139, 168, 0.05)' : 'none',
+                border: `1px solid ${activeCard === 'tool-skills' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)'}`,
                 transform: activeCard === 'tool-skills' ? 'translateY(-2px)' : 'translateY(0)',
-                '--spotlight-color': 'rgba(243, 139, 168, 0.12)',
               } as React.CSSProperties}
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setActiveCard('tool-skills')}
@@ -329,10 +310,8 @@ export function BentoSection() {
             <div
               className="md:col-span-1 rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                border: `1px solid ${activeCard === 'learn-skills' ? '#cba6f7' : 'rgba(255, 255, 255, 0.06)'}`,
-                boxShadow: activeCard === 'learn-skills' ? '0 8px 30px rgba(203, 166, 247, 0.05)' : 'none',
+                border: `1px solid ${activeCard === 'learn-skills' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)'}`,
                 transform: activeCard === 'learn-skills' ? 'translateY(-2px)' : 'translateY(0)',
-                '--spotlight-color': 'rgba(203, 166, 247, 0.12)',
               } as React.CSSProperties}
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setActiveCard('learn-skills')}
@@ -359,10 +338,8 @@ export function BentoSection() {
             <div
               className="rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                border: `1px solid ${activeCard === 'interests' ? '#94e2d5' : 'rgba(255, 255, 255, 0.06)'}`,
-                boxShadow: activeCard === 'interests' ? '0 8px 30px rgba(148, 226, 213, 0.05)' : 'none',
+                border: `1px solid ${activeCard === 'interests' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)'}`,
                 transform: activeCard === 'interests' ? 'translateY(-2px)' : 'translateY(0)',
-                '--spotlight-color': 'rgba(148, 226, 213, 0.12)',
               } as React.CSSProperties}
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setActiveCard('interests')}

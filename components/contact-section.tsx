@@ -46,11 +46,10 @@ export function ContactSection() {
 
   const inputStyle = (field: string) => ({
     backgroundColor: 'rgba(255, 255, 255, 0.02)',
-    border: `1px solid ${focusedField === field ? '#cba6f7' : 'rgba(255, 255, 255, 0.06)'}`,
+    border: `1px solid ${focusedField === field ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.05)'}`,
     color: '#cdd6f4',
-    boxShadow: focusedField === field ? '0 0 0 2px rgba(203, 166, 247, 0.12)' : 'none',
     outline: 'none',
-    transition: 'border-color 0.15s, box-shadow 0.15s',
+    transition: 'border-color 0.15s',
   })
 
   return (
@@ -60,15 +59,7 @@ export function ContactSection() {
       className="relative py-32 md:py-44 px-6"
       aria-label="Contact"
     >
-      {/* Subtle background glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(ellipse 60% 40% at 50% 80%, rgba(203,166,247,0.04), transparent)',
-        }}
-        aria-hidden="true"
-      />
+
 
       <div className="relative max-w-2xl mx-auto">
         <Reveal delay={0.05} direction="up">
@@ -97,7 +88,7 @@ export function ContactSection() {
         <div
           className="contact-card rounded-lg overflow-hidden transition-all duration-700"
           style={{
-            border: '1px solid rgba(255, 255, 255, 0.06)',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
             opacity: visible ? 1 : 0,
             transform: visible ? undefined : 'translateY(20px)',
             transitionDelay: '100ms',

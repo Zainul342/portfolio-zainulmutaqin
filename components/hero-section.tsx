@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { ArrowRight, Mail, MapPin } from 'lucide-react'
 import dynamic from 'next/dynamic'
+import { motion } from 'framer-motion'
 import { MagneticButton } from '@/components/magnetic-button'
 import { TextReveal } from '@/components/text-reveal'
 
@@ -23,92 +24,39 @@ const TopographicCanvas = dynamic(
 )
 
 const BOOT_LINES = [
-  { text: '> loading system modules...', delay: 0 },
-  { text: '> initializing zainul.mutaqin...', delay: 600 },
-  { text: '> status: full-stack developer | systems explorer', delay: 1400 },
-  { text: '> session active. ready.', delay: 2400 },
+  { text: '> loading system modules...', color: '#cba6f7' },
+  { text: '> initializing zainul.mutaqin...', color: '#cba6f7' },
+  { text: '> status: full-stack developer | systems explorer', color: '#89b4fa' },
+  { text: '> session active. ready.', color: '#a6e3a1' },
 ]
 
-const MOBILE_TYPING_SPEED = 30
-const DESKTOP_TYPING_SPEED = 40
-const REVEAL_DELAY = 3200
-
-function useTypewriter(lines: typeof BOOT_LINES) {
-  const [displayedLines, setDisplayedLines] = useState<string[]>([])
-  const [currentLineIndex, setCurrentLineIndex] = useState(0)
-  const [currentCharIndex, setCurrentCharIndex] = useState(0)
-  const [done, setDone] = useState(false)
-  const [typingSpeed, setTypingSpeed] = useState(DESKTOP_TYPING_SPEED)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    if (mediaQuery.matches) {
-      setDisplayedLines(lines.map((l) => l.text))
-      setDone(true)
-      return
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.8,
     }
+  }
+}
 
-    const updateTypingSpeed = () => {
-      setTypingSpeed(window.innerWidth < 768 ? MOBILE_TYPING_SPEED : DESKTOP_TYPING_SPEED)
+const lineVariants = {
+  hidden: { opacity: 0, y: 4 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.35,
+      ease: [0.16, 1, 0.3, 1],
     }
-
-    updateTypingSpeed()
-    window.addEventListener('resize', updateTypingSpeed)
-    return () => window.removeEventListener('resize', updateTypingSpeed)
-  }, [lines])
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return
-    }
-    if (currentLineIndex >= lines.length) {
-      setDone(true)
-      // Pause for 5.5s at the end of the sequence, then reset (Total cycle ~8 seconds)
-      const loopTimer = setTimeout(() => {
-        setDisplayedLines([])
-        setCurrentLineIndex(0)
-        setCurrentCharIndex(0)
-        setDone(false)
-      }, 5500)
-      return () => clearTimeout(loopTimer)
-    }
-
-    const line = lines[currentLineIndex]
-    const startDelay =
-      currentLineIndex === 0
-        ? line.delay
-        : line.delay - lines[currentLineIndex - 1].delay
-
-    const lineTimer = setTimeout(() => {
-      const charTimer = setInterval(() => {
-        setCurrentCharIndex((prev) => {
-          const next = prev + 1
-          setDisplayedLines((prevLines) => {
-            const updated = [...prevLines]
-            updated[currentLineIndex] = line.text.slice(0, next)
-            return updated
-          })
-          if (next >= line.text.length) {
-            clearInterval(charTimer)
-            setCurrentLineIndex((i) => i + 1)
-            setCurrentCharIndex(0)
-          }
-          return next
-        })
-      }, typingSpeed)
-      return () => clearInterval(charTimer)
-    }, currentLineIndex === 0 ? 400 : startDelay)
-
-    return () => clearTimeout(lineTimer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentLineIndex, typingSpeed, done])
-
-  return { displayedLines, done }
+  }
 }
 
 export function HeroSection() {
-  const { displayedLines, done } = useTypewriter(BOOT_LINES)
+  const [done, setDone] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [resetKey, setResetKey] = useState(0)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  
   const [revealed, setRevealed] = useState(false)
   const [hasRevealed, setHasRevealed] = useState(false)
   const [glitching, setGlitching] = useState(false)
@@ -116,23 +64,43 @@ export function HeroSection() {
   const nameRef = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
-    if (done && !hasRevealed) {
-      setHasRevealed(true)
-      if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        setRevealed(true)
-        setGlitching(false)
-        return
+    if (typeof window !== 'undefined') {
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+      setPrefersReducedMotion(mediaQuery.matches)
+      if (mediaQuery.matches) {
+        setDone(true)
       }
-      const t = setTimeout(() => {
-        setRevealed(true)
-        setTimeout(() => {
-          setGlitching(true)
-          setTimeout(() => setGlitching(false), 700)
-        }, 100)
-      }, REVEAL_DELAY - 2400)
-      return () => clearTimeout(t)
     }
-  }, [done, hasRevealed])
+  }, [])
+
+  useEffect(() => {
+    if (done) {
+      if (!hasRevealed) {
+        setHasRevealed(true)
+        if (prefersReducedMotion) {
+          setRevealed(true)
+          setGlitching(false)
+        } else {
+          const t = setTimeout(() => {
+            setRevealed(true)
+            setTimeout(() => {
+              setGlitching(true)
+              setTimeout(() => setGlitching(false), 700)
+            }, 100)
+          }, 800)
+          return () => clearTimeout(t)
+        }
+      }
+
+      // Loop sequence
+      const loopTimer = setTimeout(() => {
+        setResetKey(prev => prev + 1)
+        setActiveIndex(0)
+        setDone(false)
+      }, 5500)
+      return () => clearTimeout(loopTimer)
+    }
+  }, [done, hasRevealed, prefersReducedMotion])
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const hero = heroRef.current
@@ -156,23 +124,6 @@ export function HeroSection() {
       className="noise-overlay relative min-h-screen flex items-center justify-center overflow-hidden"
       aria-label="Hero"
     >
-      {/* Subtle mouse-reactive radial background glow */}
-      <div className="hero-radial-glow" aria-hidden="true" />
-
-      {/* Subtle radial vignette centered */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(circle at 50% 50%, transparent 20%, var(--ctp-base) 85%)',
-        }}
-        aria-hidden="true"
-      />
-
-      {/* Floating Background Orbs for atmospheric depth */}
-      <div className="gradient-orb bg-ctp-mauve/10 w-[280px] h-[280px] top-[10%] left-[15%]" aria-hidden="true" />
-      <div className="gradient-orb bg-ctp-blue/10 w-[320px] h-[320px] bottom-[20%] right-[10%] [animation-delay:-6s]" aria-hidden="true" />
-
       {/* Ambient Topographic background at low opacity */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.12] z-0"
@@ -206,28 +157,40 @@ export function HeroSection() {
               aria-live="polite"
               aria-label="Terminal boot sequence"
             >
-              {BOOT_LINES.map((line, i) => (
-                <div key={i} className="mb-1">
-                  {displayedLines[i] !== undefined ? (
-                    <span
-                      style={{
-                        color: line.text.includes('ready')
-                          ? '#a6e3a1'
-                          : line.text.includes('status')
-                          ? '#89b4fa'
-                          : '#cba6f7',
-                      }}
+              {prefersReducedMotion ? (
+                BOOT_LINES.map((line, idx) => (
+                  <div key={idx} className="mb-1" style={{ color: line.color }}>
+                    {line.text}
+                    {idx === BOOT_LINES.length - 1 && (
+                      <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <motion.div
+                  key={resetKey}
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                  onAnimationComplete={() => setDone(true)}
+                  className="space-y-1"
+                >
+                  {BOOT_LINES.map((line, idx) => (
+                    <motion.div
+                      key={idx}
+                      variants={lineVariants}
+                      onAnimationStart={() => setActiveIndex(idx)}
+                      className="min-h-[20px]"
+                      style={{ color: line.color }}
                     >
-                      {displayedLines[i]}
-                      {i === BOOT_LINES.findIndex((_, idx) => displayedLines[idx] === undefined) - 1 &&
-                        displayedLines[i].length < line.text.length && (
-                          <span className="terminal-cursor" aria-hidden="true" />
-                        )}
-                    </span>
-                  ) : null}
-                </div>
-              ))}
-              {done && <span className="terminal-cursor" aria-hidden="true" />}
+                      {line.text}
+                      {((activeIndex === idx && !done) || (idx === BOOT_LINES.length - 1 && done)) && (
+                        <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
+                      )}
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
             </div>
           </div>
 

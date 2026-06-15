@@ -78,8 +78,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${clashDisplay.variable} ${satoshi.variable} ${jetbrainsMono.variable}`}>
-      <body className="font-sans antialiased bg-[#1e1e2e] text-[#cdd6f4] noise-overlay min-h-screen relative">
-        <div className="crt-lens" aria-hidden="true" />
+      <body className="font-sans antialiased bg-[#0a0a0a] text-[#cdd6f4] noise-overlay min-h-screen relative">
         <JsonLd />
         {children}
         {/* Widjet (widjet.com) embed */}

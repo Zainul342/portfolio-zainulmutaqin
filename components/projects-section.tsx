@@ -49,23 +49,16 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         project.featured ? 'md:col-span-2 lg:col-span-2' : 'col-span-1'
       }`}
       style={{
-        border: `1px solid ${hovered ? project.accentColor : 'rgba(255, 255, 255, 0.06)'}`,
+        border: `1px solid ${hovered ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)'}`,
         transform: hovered && !isReducedMotion
-          ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-6px)`
-          : 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)',
-        boxShadow: hovered
-          ? `0 12px 30px color-mix(in srgb, ${project.accentColor} 12%, transparent)`
-          : '0 4px 12px rgba(0,0,0,0.2)',
-        '--spotlight-color': `color-mix(in srgb, ${project.accentColor} 14%, transparent)`,
+          ? 'translateY(-6px)'
+          : 'translateY(0)',
       } as React.CSSProperties}
     >
       <div className="spotlight-card-content flex flex-col flex-grow h-full w-full">
       {/* ── Decorative Cyber Header ────────────────────────────────────────── */}
       <div 
-        className="h-28 w-full relative overflow-hidden transition-all duration-300 flex items-center justify-center"
-        style={{
-          background: `linear-gradient(135deg, color-mix(in srgb, ${project.accentColor} 14%, var(--ctp-mantle)) 0%, color-mix(in srgb, ${project.accentColor} 3%, var(--ctp-crust)) 100%)`
-        }}
+        className="h-28 w-full relative overflow-hidden transition-all duration-300 flex items-center justify-center bg-[var(--ctp-crust)]"
       >
         <div className="absolute inset-0 opacity-15 flex items-center justify-center font-mono text-[76px] font-extrabold tracking-widest text-[#45475a]">
           {project.name.slice(0, 4).toUpperCase()}
@@ -88,7 +81,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         className="flex items-center justify-between px-4 py-2 border-b border-white/5"
         style={{ 
           backgroundColor: 'var(--ctp-crust)',
-          borderBottomColor: hovered ? `color-mix(in srgb, ${project.accentColor} 30%, rgba(255, 255, 255, 0.06))` : 'rgba(255, 255, 255, 0.06)' 
+          borderBottomColor: 'rgba(255, 255, 255, 0.05)' 
         }}
       >
         <div className="flex items-center gap-1.5">
@@ -121,7 +114,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         <div>
           <h3
             className="font-mono text-base font-bold transition-colors duration-200 mb-2"
-            style={{ color: hovered ? project.accentColor : '#cdd6f4' }}
+            style={{ color: hovered ? '#ffffff' : '#cdd6f4' }}
           >
             <Link href={`/projects/${project.slug}`} className="hover:underline flex items-center gap-1 cursor-none">
               {project.name}
@@ -140,7 +133,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 hovered ? 'max-h-24 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-1 pointer-events-none'
               }`}
               style={{ 
-                borderColor: hovered ? `color-mix(in srgb, ${project.accentColor} 40%, rgba(255, 255, 255, 0.06))` : 'rgba(255, 255, 255, 0.06)',
+                borderColor: hovered ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)',
                 color: '#a6adc8'
               }}
             >

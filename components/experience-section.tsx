@@ -59,14 +59,7 @@ export function ExperienceSection() {
       className="relative py-32 md:py-44 px-6"
       aria-label="Experience Timeline"
     >
-      {/* Background visual grid accents */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'linear-gradient(to bottom, transparent, rgba(203,166,247,0.015), transparent)',
-        }}
-        aria-hidden="true"
-      />
+
 
       <div className="max-w-3xl mx-auto">
         <Reveal delay={0.05} direction="up">
@@ -93,14 +86,13 @@ export function ExperienceSection() {
                     className="absolute -left-[35px] top-1.5 w-6 h-6 rounded-full border flex items-center justify-center transition-all duration-300"
                     style={{
                       backgroundColor: isHovered ? 'var(--ctp-base)' : 'var(--ctp-crust)',
-                      borderColor: isHovered ? '#cba6f7' : 'rgba(255, 255, 255, 0.06)',
-                      boxShadow: isHovered ? '0 0 12px rgba(203,166,247,0.4)' : 'none',
+                      borderColor: isHovered ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.05)',
                     }}
                   >
                     <GitCommit
                       size={12}
                       style={{
-                        color: isHovered ? '#cba6f7' : '#6c7086',
+                        color: isHovered ? '#ffffff' : '#6c7086',
                       }}
                     />
                   </div>
@@ -109,8 +101,7 @@ export function ExperienceSection() {
                     <div
                       className="p-6 rounded-xl border transition-all duration-300 bento-card"
                       style={{
-                        borderColor: isHovered ? '#cba6f7' : 'rgba(255, 255, 255, 0.06)',
-                        boxShadow: isHovered ? '0 8px 30px rgba(203,166,247,0.03)' : 'none',
+                        borderColor: isHovered ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)',
                         transform: isHovered ? 'translateX(4px)' : 'none',
                       }}
                     >
