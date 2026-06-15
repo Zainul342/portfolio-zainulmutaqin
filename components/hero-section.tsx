@@ -58,6 +58,15 @@ export function HeroSection() {
     }
   }, [revealed, prefersReducedMotion])
 
+  // SSR Skeleton to prevent hydration mismatch and ensure animations run cleanly on client
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
+        <div className="w-full max-w-xl mx-auto bg-[#0a0a0a] border border-white/5 rounded-lg h-48 animate-pulse" />
+      </div>
+    )
+  }
+
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const hero = heroRef.current
@@ -114,60 +123,54 @@ export function HeroSection() {
               aria-live="polite"
               aria-label="Terminal boot sequence"
             >
-              {!mounted ? (
-                <div className="min-h-[20px] mb-1">
-                  <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
-                </div>
-              ) : (
-                BOOT_LINES.map((line, idx) => {
-                  const delayTime = idx * 0.4
-                  const isLastLine = idx === BOOT_LINES.length - 1
+              {BOOT_LINES.map((line, idx) => {
+                const delayTime = idx * 0.4
+                const isLastLine = idx === BOOT_LINES.length - 1
 
-                  return (
-                    <div key={idx} className="min-h-[20px] mb-1">
-                      {prefersReducedMotion ? (
-                        <div style={{ color: line.color }}>
-                          {line.text}
-                          {isLastLine && (
-                            <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
-                          )}
-                        </div>
-                      ) : (
-                        <motion.div
-                          initial={{ opacity: 0, y: 4 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.4, delay: delayTime, ease: "easeOut" }}
-                          onAnimationComplete={() => {
-                            if (isLastLine) {
-                              setRevealed(true)
-                            }
-                          }}
-                          style={{ color: line.color }}
-                        >
-                          {line.text}
-                          {isLastLine && (
-                            <motion.span
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: [0, 1, 0] }}
-                              transition={{
-                                opacity: {
-                                  repeat: Infinity,
-                                  duration: 0.8,
-                                  ease: "linear",
-                                },
-                                delay: delayTime + 0.4,
-                              }}
-                              className="text-[#a6e3a1] font-bold inline-block ml-1"
-                            >
-                              _
-                            </motion.span>
-                          )}
-                        </motion.div>
-                      )}
-                    </div>
-                  )
-                })
-              )}
+                return (
+                  <div key={idx} className="min-h-[20px] mb-1">
+                    {prefersReducedMotion ? (
+                      <div style={{ color: line.color }}>
+                        {line.text}
+                        {isLastLine && (
+                          <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
+                        )}
+                      </div>
+                    ) : (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: delayTime, ease: "easeOut" }}
+                        onAnimationComplete={() => {
+                          if (isLastLine) {
+                            setRevealed(true)
+                          }
+                        }}
+                        style={{ color: line.color }}
+                      >
+                        {line.text}
+                        {isLastLine && (
+                          <motion.span
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: [0, 1, 0] }}
+                            transition={{
+                              opacity: {
+                                repeat: Infinity,
+                                duration: 0.8,
+                                ease: "linear",
+                              },
+                              delay: delayTime + 0.5,
+                            }}
+                            className="text-[#a6e3a1] font-bold inline-block ml-1"
+                          >
+                            _
+                          </motion.span>
+                        )}
+                      </motion.div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
 
