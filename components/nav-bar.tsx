@@ -12,6 +12,7 @@ const NAV_SECTIONS = [
   { id: 'projects', label: 'projects', isHash: true },
   { id: 'contact', label: 'contact', isHash: true },
   { id: 'blog', label: 'blog', isHash: false, path: '/blog' },
+  { id: 'archive', label: 'archive', isHash: false, path: '/archive' },
 ]
 
 export function NavBar({ onOpenPalette }: { onOpenPalette: () => void }) {
@@ -24,7 +25,9 @@ export function NavBar({ onOpenPalette }: { onOpenPalette: () => void }) {
     setMobileOpen(false) // Auto-close mobile menu on page transition
     
     if (pathname !== '/') {
-      setActiveSection('blog')
+      // Highlight whichever nav section matches current path
+      const match = NAV_SECTIONS.find((s) => !s.isHash && s.path && pathname.startsWith(s.path))
+      setActiveSection(match?.id ?? '')
       return
     }
 
@@ -100,7 +103,8 @@ export function NavBar({ onOpenPalette }: { onOpenPalette: () => void }) {
         {/* Nav links — hidden on mobile */}
         <div className="hidden sm:flex items-center gap-6">
           {NAV_SECTIONS.map((section) => {
-            const isActive = activeSection === section.id || (section.id === 'blog' && pathname.startsWith('/blog'))
+            const isActive = activeSection === section.id ||
+              (!section.isHash && section.path && pathname.startsWith(section.path))
 
             if (section.isHash) {
               return (
@@ -244,7 +248,8 @@ export function NavBar({ onOpenPalette }: { onOpenPalette: () => void }) {
 
             <div className="flex-1 flex flex-col justify-center items-center gap-8 px-6 pb-12 relative z-10">
               {NAV_SECTIONS.map((section, idx) => {
-                const isActive = activeSection === section.id || (section.id === 'blog' && pathname.startsWith('/blog'))
+                const isActive = activeSection === section.id ||
+                  (!section.isHash && section.path && pathname.startsWith(section.path))
                 return (
                   <motion.div
                     key={section.id}

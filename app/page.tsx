@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { HeroSection } from '@/components/hero-section'
 import { BentoSection } from '@/components/bento-section'
 import { ExperienceSection } from '@/components/experience-section'
@@ -21,6 +22,16 @@ export default function Portfolio() {
 
         <SectionDivider label="// 03. projects" accentColor="var(--ctp-green)" />
         <ProjectsSection />
+
+        {/* Archive CTA */}
+        <div className="flex justify-center py-6">
+          <Link
+            href="/archive"
+            className="font-mono text-xs text-neutral-600 hover:text-neutral-300 transition-colors duration-150 tracking-wide"
+          >
+            [ view full digital archive -&gt; ]
+          </Link>
+        </div>
 
         <SectionDivider label="// 04. contact" accentColor="var(--ctp-teal)" />
         <ContactSection />
