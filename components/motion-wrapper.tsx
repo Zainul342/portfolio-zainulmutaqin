@@ -16,7 +16,7 @@ export function Reveal({
   children,
   direction = 'up',
   delay = 0.15,
-  duration = 0.4,
+  duration = 0.8,
   className = '',
   width = '100%',
 }: RevealProps) {
@@ -56,7 +56,7 @@ export function Reveal({
         variants={getVariants()}
         initial="hidden"
         animate={isInView ? 'visible' : 'hidden'}
-        transition={{ duration, delay, ease: 'easeOut' }}
+        transition={{ duration, delay, ease: [0.16, 1, 0.3, 1] }}
       >
         {children}
       </motion.div>

@@ -22,11 +22,6 @@ const TopographicCanvas = dynamic(
   { ssr: false, loading: () => <GlobeLoadingSkeleton /> },
 )
 
-const GlobeCanvas = dynamic(
-  () => import('@/components/globe-canvas').then((m) => m.GlobeCanvas),
-  { ssr: false, loading: () => <GlobeLoadingSkeleton /> },
-)
-
 const BOOT_LINES = [
   { text: '> loading system modules...', delay: 0 },
   { text: '> initializing zainul.mutaqin...', delay: 600 },
@@ -117,17 +112,8 @@ export function HeroSection() {
   const [revealed, setRevealed] = useState(false)
   const [hasRevealed, setHasRevealed] = useState(false)
   const [glitching, setGlitching] = useState(false)
-  const [showGlobe, setShowGlobe] = useState(false)
   const heroRef = useRef<HTMLDivElement>(null)
   const nameRef = useRef<HTMLHeadingElement>(null)
-  const rightColRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    const handleToggle = () => setShowGlobe((prev) => !prev)
-    window.addEventListener('toggle-globe', handleToggle)
-    return () => window.removeEventListener('toggle-globe', handleToggle)
-  }, [])
 
   useEffect(() => {
     if (done && !hasRevealed) {
@@ -167,37 +153,45 @@ export function HeroSection() {
       id="hero"
       ref={heroRef}
       onMouseMove={handleMouseMove}
-      className="noise-overlay relative min-h-screen flex items-center overflow-hidden"
+      className="noise-overlay relative min-h-screen flex items-center justify-center overflow-hidden"
       aria-label="Hero"
     >
       {/* Subtle mouse-reactive radial background glow */}
       <div className="hero-radial-glow" aria-hidden="true" />
 
-      {/* Subtle radial vignette */}
+      {/* Subtle radial vignette centered */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'radial-gradient(ellipse 100% 80% at 30% 50%, transparent 20%, #1e1e2e 90%)',
+            'radial-gradient(circle at 50% 50%, transparent 20%, var(--ctp-base) 85%)',
         }}
         aria-hidden="true"
       />
 
       {/* Floating Background Orbs for atmospheric depth */}
-      <div className="gradient-orb bg-ctp-mauve/15 w-[280px] h-[280px] top-[10%] left-[15%]" aria-hidden="true" />
-      <div className="gradient-orb bg-ctp-blue/15 w-[320px] h-[320px] bottom-[20%] right-[10%] [animation-delay:-6s]" aria-hidden="true" />
+      <div className="gradient-orb bg-ctp-mauve/10 w-[280px] h-[280px] top-[10%] left-[15%]" aria-hidden="true" />
+      <div className="gradient-orb bg-ctp-blue/10 w-[320px] h-[320px] bottom-[20%] right-[10%] [animation-delay:-6s]" aria-hidden="true" />
 
-      {/* ── Two-column grid ────────────────────────────────────────────────── */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-[60fr_40fr] gap-12 items-center">
+      {/* Ambient Topographic background at low opacity */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.12] z-0"
+        aria-hidden="true"
+      >
+        <TopographicCanvas />
+      </div>
 
-        {/* ── LEFT COLUMN ── */}
-        <div className="flex flex-col items-start order-first lg:order-none">
+      {/* ── Centered layout container ────────────────────────────────────────── */}
+      <div className="relative z-10 w-full max-w-3xl mx-auto px-6 py-20 flex flex-col items-center text-center">
+
+        {/* ── CENTERED CONTENT COLUMN ── */}
+        <div className="flex flex-col items-center w-full">
           {/* Terminal window */}
           <div
-            className="w-full max-w-xl rounded-lg overflow-hidden mb-10 glow-card border border-[#313244]/40"
+            className="w-full max-w-xl rounded-lg overflow-hidden mb-10 glow-card border border-white/5"
           >
             {/* Traffic lights bar */}
-            <div className="traffic-lights">
+            <div className="traffic-lights border-b border-white/5">
               <span className="traffic-light" style={{ backgroundColor: '#f38ba8' }} aria-hidden="true" />
               <span className="traffic-light" style={{ backgroundColor: '#f9e2af' }} aria-hidden="true" />
               <span className="traffic-light" style={{ backgroundColor: '#a6e3a1' }} aria-hidden="true" />
@@ -208,7 +202,7 @@ export function HeroSection() {
 
             {/* Terminal body */}
             <div
-              className="p-5 font-mono text-sm leading-relaxed min-h-[128px]"
+              className="p-5 font-mono text-sm leading-relaxed min-h-[128px] text-left w-full"
               aria-live="polite"
               aria-label="Terminal boot sequence"
             >
@@ -239,7 +233,7 @@ export function HeroSection() {
 
           {/* Name + Tagline — revealed after boot */}
           <div
-            className="transition-all duration-700"
+            className="transition-all duration-700 flex flex-col items-center w-full"
             style={{
               opacity: revealed ? 1 : 0,
               transform: revealed ? 'translateY(0)' : 'translateY(16px)',
@@ -257,7 +251,7 @@ export function HeroSection() {
             </h1>
 
             <p
-              className="text-lg sm:text-xl leading-relaxed text-pretty max-w-xl"
+              className="text-lg sm:text-xl leading-relaxed text-pretty max-w-xl text-center"
               style={{ color: '#a6adc8' }}
             >
               <TextReveal
@@ -280,7 +274,7 @@ export function HeroSection() {
 
             {/* Coordinates — system metadata aesthetic */}
             <div
-              className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-3 mb-8 font-mono text-[10px]"
+              className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 mt-3 mb-8 font-mono text-[10px]"
               style={{ color: '#a6adc8' }}
             >
               <div className="flex items-center gap-1">
@@ -288,12 +282,12 @@ export function HeroSection() {
                 <span style={{ color: '#7f849c' }}>LOC:</span>
                 <span style={{ color: '#cdd6f4' }}>6.2088° S, 106.8456° E</span>
               </div>
-              <span style={{ color: '#313244' }}>|</span>
+              <span className="text-white/10">|</span>
               <div className="flex items-center gap-1">
                 <span style={{ color: '#7f849c' }}>ZONE:</span>
                 <span style={{ color: '#cdd6f4' }}>UTC+07.00</span>
               </div>
-              <span style={{ color: '#313244' }}>|</span>
+              <span className="text-white/10">|</span>
               <div className="flex items-center gap-1">
                 <span style={{ color: '#7f849c' }}>STATUS:</span>
                 <span style={{ color: '#a6e3a1' }}>ONLINE</span>
@@ -301,7 +295,7 @@ export function HeroSection() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-wrap gap-4 mb-12">
+            <div className="flex flex-wrap justify-center gap-4 mb-12">
               <MagneticButton>
                 <button
                   onClick={() => scrollTo('projects')}
@@ -352,8 +346,8 @@ export function HeroSection() {
             >
               press{' '}
               <kbd
-                className="px-1.5 py-0.5 rounded text-[10px]"
-                style={{ backgroundColor: '#313244', color: '#cba6f7', border: '1px solid #45475a' }}
+                className="px-1.5 py-0.5 rounded text-[10px] bg-white/5 border border-white/10"
+                style={{ color: '#cba6f7' }}
               >
                 cmd+k
               </kbd>{' '}
@@ -361,50 +355,12 @@ export function HeroSection() {
             </button>
           </div>
         </div>
-
-        {/* ── RIGHT COLUMN — Topographic contour field & Globe ── */}
-        <div
-          ref={rightColRef}
-          className="absolute inset-0 lg:relative lg:flex items-center justify-center lg:justify-end order-last lg:order-none pointer-events-none lg:pointer-events-auto opacity-20 lg:opacity-100 z-0 lg:z-10"
-          style={{
-            animation: 'globeFloat 6s ease-in-out infinite',
-          }}
-          aria-hidden="true"
-        >
-          <div
-            className="relative w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] lg:w-[460px] lg:h-[460px]"
-            style={{
-              filter: 'drop-shadow(0 0 30px rgba(203,166,247,0.05))',
-            }}
-          >
-            <div
-              className="absolute inset-0 transition-all duration-700"
-              style={{
-                opacity: showGlobe ? 0 : 1,
-                transform: showGlobe ? 'scale(0.92) rotate(-6deg)' : 'scale(1) rotate(0deg)',
-                pointerEvents: showGlobe ? 'none' : 'auto',
-              }}
-            >
-              <TopographicCanvas />
-            </div>
-            <div
-              className="absolute inset-0 transition-all duration-700"
-              style={{
-                opacity: showGlobe ? 1 : 0,
-                transform: showGlobe ? 'scale(1) rotate(0deg)' : 'scale(0.92) rotate(6deg)',
-                pointerEvents: showGlobe ? 'auto' : 'none',
-              }}
-            >
-              <GlobeCanvas />
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Scroll hint */}
       {revealed && (
         <div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-10"
           style={{ color: '#6c7086' }}
           aria-hidden="true"
         >
@@ -412,17 +368,6 @@ export function HeroSection() {
           <div className="w-px h-8" style={{ background: 'linear-gradient(to bottom, #6c7086, transparent)' }} />
         </div>
       )}
-
-      <style>{`
-        @keyframes globeFloat {
-          0%   { transform: translateY(0px); }
-          50%  { transform: translateY(-12px); }
-          100% { transform: translateY(0px); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .globe-float { animation: none !important; }
-        }
-      `}</style>
     </section>
   )
 }

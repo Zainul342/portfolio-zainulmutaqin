@@ -213,17 +213,6 @@ function buildCommands(onClose: () => void, setEasterEgg: (key: string) => void)
       action: () => setEasterEgg('hack-planet'),
       easterEgg: EASTER_EGGS['hack-planet'],
     },
-    {
-      id: 'easter-globe',
-      label: 'globe',
-      description: 'Toggle wireframe telemetry globe easter egg',
-      category: 'easter',
-      icon: <Globe size={14} />,
-      action: () => {
-        window.dispatchEvent(new CustomEvent('toggle-globe'))
-        onClose()
-      },
-    },
   ]
 }
 
