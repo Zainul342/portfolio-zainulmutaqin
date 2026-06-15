@@ -1,10 +1,26 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, JetBrains_Mono } from 'next/font/google'
+import { JetBrains_Mono } from 'next/font/google'
+import localFont from 'next/font/local'
 import './globals.css'
 import { JsonLd } from '@/components/json-ld'
 
-const inter = Inter({
-  subsets: ['latin'],
+const clashDisplay = localFont({
+  src: '../public/fonts/ClashDisplay_Complete/Fonts/WEB/fonts/ClashDisplay-Variable.woff2',
+  variable: '--font-display',
+  display: 'swap',
+})
+
+const satoshi = localFont({
+  src: [
+    {
+      path: '../public/fonts/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff2',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-VariableItalic.woff2',
+      style: 'italic',
+    }
+  ],
   variable: '--font-sans',
   display: 'swap',
 })
@@ -61,7 +77,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${clashDisplay.variable} ${satoshi.variable} ${jetbrainsMono.variable}`}>
       <body className="font-sans antialiased bg-[#1e1e2e] text-[#cdd6f4] noise-overlay min-h-screen relative">
         <div className="crt-lens" aria-hidden="true" />
         <JsonLd />

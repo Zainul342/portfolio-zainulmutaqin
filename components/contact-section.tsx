@@ -45,8 +45,8 @@ export function ContactSection() {
   }
 
   const inputStyle = (field: string) => ({
-    backgroundColor: '#181825',
-    border: `1px solid ${focusedField === field ? '#cba6f7' : '#313244'}`,
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    border: `1px solid ${focusedField === field ? '#cba6f7' : 'rgba(255, 255, 255, 0.06)'}`,
     color: '#cdd6f4',
     boxShadow: focusedField === field ? '0 0 0 2px rgba(203, 166, 247, 0.12)' : 'none',
     outline: 'none',
@@ -57,7 +57,7 @@ export function ContactSection() {
     <section
       id="contact"
       ref={ref as React.RefObject<HTMLElement>}
-      className="relative py-24 px-6"
+      className="relative py-32 md:py-44 px-6"
       aria-label="Contact"
     >
       {/* Subtle background glow */}
@@ -75,7 +75,7 @@ export function ContactSection() {
         {/* Section label */}
         <div className="flex items-center gap-3 mb-12">
           <span className="section-label">// contact</span>
-          <div className="flex-1 h-px" style={{ backgroundColor: '#313244' }} />
+          <div className="flex-1 h-px bg-white/5" />
         </div>
 
         <div
@@ -97,8 +97,7 @@ export function ContactSection() {
         <div
           className="contact-card rounded-lg overflow-hidden transition-all duration-700"
           style={{
-            backgroundColor: '#181825',
-            border: '1px solid #313244',
+            border: '1px solid rgba(255, 255, 255, 0.06)',
             opacity: visible ? 1 : 0,
             transform: visible ? undefined : 'translateY(20px)',
             transitionDelay: '100ms',
@@ -289,13 +288,13 @@ export function ContactSection() {
 export function Footer() {
   return (
     <footer
-      className="py-10 px-6 text-center relative"
-      style={{ borderTop: '1px solid #313244', backgroundColor: '#11111b' }}
+      className="py-10 px-6 text-center relative border-t border-white/5"
+      style={{ backgroundColor: 'var(--ctp-crust)' }}
     >
       {/* Back to top button */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full flex items-center justify-center border border-[#313244] bg-[#181825] text-[#cba6f7] hover:text-[#d4b5f8] hover:border-[#45475a] transition-all cursor-none"
+        className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full flex items-center justify-center border border-white/5 bg-[rgba(20,21,27,0.85)] text-[#cba6f7] hover:text-[#d4b5f8] hover:border-white/10 transition-all cursor-none shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
         title="Back to Top"
         aria-label="Back to Top"
       >

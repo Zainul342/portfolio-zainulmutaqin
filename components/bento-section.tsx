@@ -95,7 +95,7 @@ export function BentoSection() {
     <section
       id="about"
       ref={ref as React.RefObject<HTMLElement>}
-      className="relative py-24 px-6 overflow-hidden"
+      className="relative py-32 md:py-44 px-6 overflow-hidden"
       aria-label="About and Skills Mosaic"
     >
       {/* Background radial gradient */}
@@ -113,10 +113,9 @@ export function BentoSection() {
             
             {/* ── 👋 BIO CARD (Spans 2 columns, 2 rows) ────────────────────────── */}
             <div
-              className="md:col-span-2 md:row-span-2 rounded-xl p-6 transition-all duration-300 flex flex-col justify-between spotlight-card"
+              className="md:col-span-2 md:row-span-2 rounded-xl p-6 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                backgroundColor: '#181825',
-                border: `1px solid ${activeCard === 'bio' ? '#cba6f7' : '#313244'}`,
+                border: `1px solid ${activeCard === 'bio' ? '#cba6f7' : 'rgba(255, 255, 255, 0.06)'}`,
                 boxShadow: activeCard === 'bio' ? '0 8px 30px rgba(203, 166, 247, 0.05)' : 'none',
                 transform: activeCard === 'bio' ? 'translateY(-2px)' : 'translateY(0)',
                 '--spotlight-color': 'rgba(203, 166, 247, 0.12)',
@@ -145,7 +144,7 @@ export function BentoSection() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 mt-6 pt-4 border-t border-[#313244]">
+                <div className="flex items-center gap-2 mt-6 pt-4 border-t border-white/5">
                   <Coffee size={13} style={{ color: '#f9e2af' }} />
                   <span className="font-mono text-xs text-[#6c7086]">fueled by coffee and curiosity</span>
                 </div>
@@ -154,10 +153,9 @@ export function BentoSection() {
 
             {/* ── 🖥️ TERMINAL LEARNING CARD (Spans 1 column, 2 rows) ────────────── */}
             <div
-              className="md:col-span-1 md:row-span-2 rounded-xl overflow-hidden flex flex-col justify-between transition-all duration-300 spotlight-card"
+              className="md:col-span-1 md:row-span-2 rounded-xl overflow-hidden flex flex-col justify-between transition-all duration-300 spotlight-card bento-card"
               style={{
-                backgroundColor: '#181825',
-                border: `1px solid ${activeCard === 'terminal' ? '#a6e3a1' : '#313244'}`,
+                border: `1px solid ${activeCard === 'terminal' ? '#a6e3a1' : 'rgba(255, 255, 255, 0.06)'}`,
                 boxShadow: activeCard === 'terminal' ? '0 8px 30px rgba(166, 227, 161, 0.05)' : 'none',
                 transform: activeCard === 'terminal' ? 'translateY(-2px)' : 'translateY(0)',
                 '--spotlight-color': 'rgba(166, 227, 161, 0.12)',
@@ -167,7 +165,7 @@ export function BentoSection() {
               onMouseLeave={() => setActiveCard(null)}
             >
               <div className="spotlight-card-content flex flex-col justify-between h-full w-full">
-                <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#313244]" style={{ backgroundColor: '#11111b' }}>
+                <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/5" style={{ backgroundColor: 'var(--ctp-crust)' }}>
                   <div className="flex gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#f38ba8' }} />
                     <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: '#f9e2af' }} />
@@ -187,17 +185,15 @@ export function BentoSection() {
                     ))}
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-[#313244]">
+                  <div className="mt-4 pt-3 border-t border-white/5">
                     <div className="mb-2 text-[10px] text-[#6c7086]">$ cat currently_learning</div>
                     <div className="flex flex-wrap gap-1">
                       {LEARNING_BADGES.map((badge) => (
                         <span
                           key={badge.label}
-                          className="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium"
+                          className="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-white/[0.02] border border-white/5"
                           style={{
-                            backgroundColor: 'rgba(203, 166, 247, 0.08)',
                             color: badge.color,
-                            border: '1px solid rgba(203, 166, 247, 0.15)',
                           }}
                         >
                           {badge.label}
@@ -215,10 +211,9 @@ export function BentoSection() {
 
             {/* ── 📍 LOCATION & TIME CARD (Spans 1 column, 1 row) ──────────────── */}
             <div
-              className="rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card"
+              className="rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                backgroundColor: '#181825',
-                border: `1px solid ${activeCard === 'location' ? '#89b4fa' : '#313244'}`,
+                border: `1px solid ${activeCard === 'location' ? '#89b4fa' : 'rgba(255, 255, 255, 0.06)'}`,
                 boxShadow: activeCard === 'location' ? '0 8px 30px rgba(137, 180, 250, 0.05)' : 'none',
                 transform: activeCard === 'location' ? 'translateY(-2px)' : 'translateY(0)',
                 '--spotlight-color': 'rgba(137, 180, 250, 0.12)',
@@ -236,7 +231,7 @@ export function BentoSection() {
                   <div className="text-xl font-bold font-mono text-[#cdd6f4] tracking-tight">{time || '12:00:00'}</div>
                   <div className="text-[10px] font-mono text-[#a6adc8] mt-1">Jakarta, ID</div>
                 </div>
-                <div className="font-mono text-[9px] text-[#6c7086] border-t border-[#313244] pt-2 mt-2">
+                <div className="font-mono text-[9px] text-[#6c7086] border-t border-white/5 pt-2 mt-2">
                   6.2088° S, 106.8456° E
                 </div>
               </div>
@@ -244,10 +239,9 @@ export function BentoSection() {
 
             {/* ── 💻 SETUP SPEC CARD (Spans 1 column, 1 row) ───────────────────── */}
             <div
-              className="rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card"
+              className="rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                backgroundColor: '#181825',
-                border: `1px solid ${activeCard === 'setup' ? '#f9e2af' : '#313244'}`,
+                border: `1px solid ${activeCard === 'setup' ? '#f9e2af' : 'rgba(255, 255, 255, 0.06)'}`,
                 boxShadow: activeCard === 'setup' ? '0 8px 30px rgba(249, 226, 175, 0.05)' : 'none',
                 transform: activeCard === 'setup' ? 'translateY(-2px)' : 'translateY(0)',
                 '--spotlight-color': 'rgba(249, 226, 175, 0.12)',
@@ -265,7 +259,7 @@ export function BentoSection() {
                   <div className="text-[11px] font-bold text-[#cdd6f4]">ThinkPad T490s</div>
                   <div className="text-[10px] text-[#a6adc8] font-mono mt-0.5">EndeavourOS (bspwm)</div>
                 </div>
-                <div className="font-mono text-[9px] text-[#6c7086] border-t border-[#313244] pt-2">
+                <div className="font-mono text-[9px] text-[#6c7086] border-t border-white/5 pt-2">
                   Ghostty + Neovim Zen
                 </div>
               </div>
@@ -273,10 +267,9 @@ export function BentoSection() {
 
             {/* ── 🌐 WEB SKILLS CARD (Spans 1 column, 1 row) ───────────────────── */}
             <div
-              className="md:col-span-1 rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card"
+              className="md:col-span-1 rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                backgroundColor: '#181825',
-                border: `1px solid ${activeCard === 'web-skills' ? '#89dceb' : '#313244'}`,
+                border: `1px solid ${activeCard === 'web-skills' ? '#89dceb' : 'rgba(255, 255, 255, 0.06)'}`,
                 boxShadow: activeCard === 'web-skills' ? '0 8px 30px rgba(137, 220, 235, 0.05)' : 'none',
                 transform: activeCard === 'web-skills' ? 'translateY(-2px)' : 'translateY(0)',
                 '--spotlight-color': 'rgba(137, 220, 235, 0.12)',
@@ -293,8 +286,7 @@ export function BentoSection() {
                   {SKILL_GROUPS[0].skills.map((skill) => (
                     <span
                       key={skill.label}
-                      className="px-2 py-0.5 rounded text-[10px] font-mono text-[#a6adc8] border border-[#313244]"
-                      style={{ backgroundColor: '#11111b' }}
+                      className="px-2 py-0.5 rounded text-[10px] font-mono text-[#a6adc8] border border-white/5 bg-white/[0.02]"
                     >
                       {skill.label}
                     </span>
@@ -305,10 +297,9 @@ export function BentoSection() {
 
             {/* ── 🛠️ TOOLS SKILLS CARD (Spans 1 column, 1 row) ──────────────────── */}
             <div
-              className="md:col-span-1 rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card"
+              className="md:col-span-1 rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                backgroundColor: '#181825',
-                border: `1px solid ${activeCard === 'tool-skills' ? '#f38ba8' : '#313244'}`,
+                border: `1px solid ${activeCard === 'tool-skills' ? '#f38ba8' : 'rgba(255, 255, 255, 0.06)'}`,
                 boxShadow: activeCard === 'tool-skills' ? '0 8px 30px rgba(243, 139, 168, 0.05)' : 'none',
                 transform: activeCard === 'tool-skills' ? 'translateY(-2px)' : 'translateY(0)',
                 '--spotlight-color': 'rgba(243, 139, 168, 0.12)',
@@ -325,8 +316,7 @@ export function BentoSection() {
                   {SKILL_GROUPS[1].skills.map((skill) => (
                     <span
                       key={skill.label}
-                      className="px-2 py-0.5 rounded text-[10px] font-mono text-[#a6adc8] border border-[#313244]"
-                      style={{ backgroundColor: '#11111b' }}
+                      className="px-2 py-0.5 rounded text-[10px] font-mono text-[#a6adc8] border border-white/5 bg-white/[0.02]"
                     >
                       {skill.label}
                     </span>
@@ -337,10 +327,9 @@ export function BentoSection() {
 
             {/* ── 📚 LEARNING SKILLS CARD (Spans 1 column, 1 row) ───────────────── */}
             <div
-              className="md:col-span-1 rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card"
+              className="md:col-span-1 rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                backgroundColor: '#181825',
-                border: `1px solid ${activeCard === 'learn-skills' ? '#cba6f7' : '#313244'}`,
+                border: `1px solid ${activeCard === 'learn-skills' ? '#cba6f7' : 'rgba(255, 255, 255, 0.06)'}`,
                 boxShadow: activeCard === 'learn-skills' ? '0 8px 30px rgba(203, 166, 247, 0.05)' : 'none',
                 transform: activeCard === 'learn-skills' ? 'translateY(-2px)' : 'translateY(0)',
                 '--spotlight-color': 'rgba(203, 166, 247, 0.12)',
@@ -357,8 +346,7 @@ export function BentoSection() {
                   {SKILL_GROUPS[2].skills.map((skill) => (
                     <span
                       key={skill.label}
-                      className="px-2 py-0.5 rounded text-[10px] font-mono text-[#a6adc8] border border-[#313244]"
-                      style={{ backgroundColor: '#11111b' }}
+                      className="px-2 py-0.5 rounded text-[10px] font-mono text-[#a6adc8] border border-white/5 bg-white/[0.02]"
                     >
                       {skill.label}
                     </span>
@@ -369,10 +357,9 @@ export function BentoSection() {
 
             {/* ── 🎯 PERSONAL ATLAS CARD (Spans 1 column, 1 row) ───────────────────── */}
             <div
-              className="rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card"
+              className="rounded-xl p-5 transition-all duration-300 flex flex-col justify-between spotlight-card bento-card"
               style={{
-                backgroundColor: '#181825',
-                border: `1px solid ${activeCard === 'interests' ? '#94e2d5' : '#313244'}`,
+                border: `1px solid ${activeCard === 'interests' ? '#94e2d5' : 'rgba(255, 255, 255, 0.06)'}`,
                 boxShadow: activeCard === 'interests' ? '0 8px 30px rgba(148, 226, 213, 0.05)' : 'none',
                 transform: activeCard === 'interests' ? 'translateY(-2px)' : 'translateY(0)',
                 '--spotlight-color': 'rgba(148, 226, 213, 0.12)',
@@ -393,7 +380,7 @@ export function BentoSection() {
                   <div>├── <span className="text-[#a6e3a1]">projects</span>/ (fieldwork)</div>
                   <div>└── <span className="text-[#74c7ec]">status</span>.json (active)</div>
                 </div>
-                <div className="font-mono text-[9px] text-[#6c7086] border-t border-[#313244] pt-2">
+                <div className="font-mono text-[9px] text-[#6c7086] border-t border-white/5 pt-2">
                   Developer index tree structure
                 </div>
               </div>

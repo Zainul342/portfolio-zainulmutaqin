@@ -45,12 +45,11 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={handleMouseLeave}
       data-cursor="VIEW"
-      className={`relative rounded-xl overflow-hidden flex flex-col transition-all duration-300 cursor-none select-none spotlight-card ${
+      className={`relative rounded-xl overflow-hidden flex flex-col transition-all duration-300 cursor-none select-none spotlight-card project-card ${
         project.featured ? 'md:col-span-2 lg:col-span-2' : 'col-span-1'
       }`}
       style={{
-        backgroundColor: '#181825',
-        border: `1px solid ${hovered ? project.accentColor : '#313244'}`,
+        border: `1px solid ${hovered ? project.accentColor : 'rgba(255, 255, 255, 0.06)'}`,
         transform: hovered && !isReducedMotion
           ? `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateY(-6px)`
           : 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)',
@@ -65,7 +64,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       <div 
         className="h-28 w-full relative overflow-hidden transition-all duration-300 flex items-center justify-center"
         style={{
-          background: `linear-gradient(135deg, color-mix(in srgb, ${project.accentColor} 14%, #181825) 0%, color-mix(in srgb, ${project.accentColor} 3%, #11111b) 100%)`
+          background: `linear-gradient(135deg, color-mix(in srgb, ${project.accentColor} 14%, var(--ctp-mantle)) 0%, color-mix(in srgb, ${project.accentColor} 3%, var(--ctp-crust)) 100%)`
         }}
       >
         <div className="absolute inset-0 opacity-15 flex items-center justify-center font-mono text-[76px] font-extrabold tracking-widest text-[#45475a]">
@@ -75,8 +74,8 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           {project.stack.slice(0, 2).map((s) => (
             <span 
               key={s.label} 
-              className="text-[9px] font-mono px-2 py-0.5 rounded border border-[#313244] shadow-sm" 
-              style={{ color: s.color ?? '#a6adc8', backgroundColor: 'rgba(24, 24, 37, 0.85)' }}
+              className="text-[9px] font-mono px-2 py-0.5 rounded border border-white/5 shadow-sm" 
+              style={{ color: s.color ?? '#a6adc8', backgroundColor: 'rgba(20, 21, 27, 0.85)' }}
             >
               {s.label}
             </span>
@@ -86,10 +85,10 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
       {/* Terminal traffic light bar */}
       <div
-        className="flex items-center justify-between px-4 py-2 border-b border-[#313244]"
+        className="flex items-center justify-between px-4 py-2 border-b border-white/5"
         style={{ 
-          backgroundColor: '#11111b',
-          borderBottomColor: hovered ? `color-mix(in srgb, ${project.accentColor} 30%, #313244)` : '#313244' 
+          backgroundColor: 'var(--ctp-crust)',
+          borderBottomColor: hovered ? `color-mix(in srgb, ${project.accentColor} 30%, rgba(255, 255, 255, 0.06))` : 'rgba(255, 255, 255, 0.06)' 
         }}
       >
         <div className="flex items-center gap-1.5">
@@ -137,15 +136,15 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           {/* Field Note HUD block (expanded on hover) */}
           {project.fieldNote && (
             <div 
-              className={`font-mono text-[9px] border border-dashed rounded p-2.5 mb-5 bg-[#11111b]/40 overflow-hidden transition-all duration-300 ${
+              className={`font-mono text-[9px] border border-dashed rounded p-2.5 mb-5 bg-white/[0.02] overflow-hidden transition-all duration-300 ${
                 hovered ? 'max-h-24 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-1 pointer-events-none'
               }`}
               style={{ 
-                borderColor: hovered ? `color-mix(in srgb, ${project.accentColor} 40%, #313244)` : '#313244',
+                borderColor: hovered ? `color-mix(in srgb, ${project.accentColor} 40%, rgba(255, 255, 255, 0.06))` : 'rgba(255, 255, 255, 0.06)',
                 color: '#a6adc8'
               }}
             >
-              <div className="flex justify-between border-b border-[#313244]/40 pb-1 mb-1 font-bold" style={{ color: project.accentColor }}>
+              <div className="flex justify-between border-b border-white/5 pb-1 mb-1 font-bold" style={{ color: project.accentColor }}>
                 <span>PROJECT INFO // TRACER</span>
                 <span>STATUS: ACTIVE</span>
               </div>
@@ -173,9 +172,8 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             {project.stack.map((s) => (
               <span
                 key={s.label}
-                className="font-mono text-[9px] px-2 py-0.5 rounded border border-[#313244]"
+                className="font-mono text-[9px] px-2 py-0.5 rounded border border-white/5 bg-white/[0.02]"
                 style={{
-                  backgroundColor: '#11111b',
                   color: s.color ?? '#a6adc8',
                 }}
               >
@@ -185,7 +183,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           </div>
 
           {/* Links */}
-          <div className="flex items-center gap-4 pt-3.5 border-t border-[#313244]">
+          <div className="flex items-center gap-4 pt-3.5 border-t border-white/5">
             <Link
               href={`/projects/${project.slug}`}
               className="flex items-center gap-1.5 font-mono text-[10px] text-[#cba6f7] transition-all duration-150 cursor-none"
@@ -240,7 +238,7 @@ export function ProjectsSection() {
     <section
       id="projects"
       ref={ref as React.RefObject<HTMLElement>}
-      className="relative py-24 px-6"
+      className="relative py-32 md:py-44 px-6"
       aria-label="Projects"
     >
       <div className="max-w-5xl mx-auto">
@@ -248,7 +246,7 @@ export function ProjectsSection() {
           {/* Section label */}
           <div className="flex items-center gap-3 mb-4">
             <span className="section-label">// fieldwork</span>
-            <div className="flex-1 h-px" style={{ backgroundColor: '#313244' }} />
+            <div className="flex-1 h-px bg-white/5" />
           </div>
 
           <p className="font-mono text-xs mb-10 text-[#6c7086]">
