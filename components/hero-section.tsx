@@ -31,14 +31,11 @@ const BOOT_LINES = [
 ]
 
 export function HeroSection() {
-  const [done, setDone] = useState(false)
-  const [visibleLinesCount, setVisibleLinesCount] = useState(0)
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
   const [mounted, setMounted] = useState(false)
-  
   const [revealed, setRevealed] = useState(false)
-  const [hasRevealed, setHasRevealed] = useState(false)
   const [glitching, setGlitching] = useState(false)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  
   const heroRef = useRef<HTMLDivElement>(null)
   const nameRef = useRef<HTMLHeadingElement>(null)
 
@@ -48,56 +45,19 @@ export function HeroSection() {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
       setPrefersReducedMotion(mediaQuery.matches)
       if (mediaQuery.matches) {
-        setVisibleLinesCount(BOOT_LINES.length)
-        setDone(true)
+        setRevealed(true)
       }
     }
   }, [])
 
-  // Timer sequence to animate lines one by one (only after client mounting)
   useEffect(() => {
-    if (!mounted || prefersReducedMotion) return
-
-    if (visibleLinesCount < BOOT_LINES.length) {
-      const delay = visibleLinesCount === 0 ? 200 : 800
-      const timer = setTimeout(() => {
-        setVisibleLinesCount((prev) => prev + 1)
-      }, delay)
-      return () => clearTimeout(timer)
-    } else {
-      setDone(true)
+    if (revealed && !prefersReducedMotion) {
+      setGlitching(true)
+      const t = setTimeout(() => setGlitching(false), 700)
+      return () => clearTimeout(t)
     }
-  }, [visibleLinesCount, prefersReducedMotion, mounted])
+  }, [revealed, prefersReducedMotion])
 
-  useEffect(() => {
-    if (!mounted) return
-
-    if (done) {
-      if (!hasRevealed) {
-        setHasRevealed(true)
-        if (prefersReducedMotion) {
-          setRevealed(true)
-          setGlitching(false)
-        } else {
-          const t = setTimeout(() => {
-            setRevealed(true)
-            setTimeout(() => {
-              setGlitching(true)
-              setTimeout(() => setGlitching(false), 700)
-            }, 100)
-          }, 800)
-          return () => clearTimeout(t)
-        }
-      }
-
-      // Loop sequence reset
-      const loopTimer = setTimeout(() => {
-        setVisibleLinesCount(0)
-        setDone(false)
-      }, 5500)
-      return () => clearTimeout(loopTimer)
-    }
-  }, [done, hasRevealed, prefersReducedMotion, mounted])
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const hero = heroRef.current
@@ -160,35 +120,49 @@ export function HeroSection() {
                 </div>
               ) : (
                 BOOT_LINES.map((line, idx) => {
-                  const isVisible = prefersReducedMotion || visibleLinesCount > idx
-                  const isCurrent = prefersReducedMotion 
-                    ? idx === BOOT_LINES.length - 1 
-                    : visibleLinesCount === idx + 1
+                  const delayTime = idx * 0.4
                   const isLastLine = idx === BOOT_LINES.length - 1
 
                   return (
                     <div key={idx} className="min-h-[20px] mb-1">
-                      {isVisible && (
-                        prefersReducedMotion ? (
-                          <div style={{ color: line.color }}>
-                            {line.text}
-                            {isCurrent && (
-                              <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
-                            )}
-                          </div>
-                        ) : (
-                          <motion.div
-                            initial={{ opacity: 0, y: 4 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                            style={{ color: line.color }}
-                          >
-                            {line.text}
-                            {((isCurrent && !done) || (isLastLine && done)) && (
-                              <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
-                            )}
-                          </motion.div>
-                        )
+                      {prefersReducedMotion ? (
+                        <div style={{ color: line.color }}>
+                          {line.text}
+                          {isLastLine && (
+                            <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
+                          )}
+                        </div>
+                      ) : (
+                        <motion.div
+                          initial={{ opacity: 0, y: 4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4, delay: delayTime, ease: "easeOut" }}
+                          onAnimationComplete={() => {
+                            if (isLastLine) {
+                              setRevealed(true)
+                            }
+                          }}
+                          style={{ color: line.color }}
+                        >
+                          {line.text}
+                          {isLastLine && (
+                            <motion.span
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: [0, 1, 0] }}
+                              transition={{
+                                opacity: {
+                                  repeat: Infinity,
+                                  duration: 0.8,
+                                  ease: "linear",
+                                },
+                                delay: delayTime + 0.4,
+                              }}
+                              className="text-[#a6e3a1] font-bold inline-block ml-1"
+                            >
+                              _
+                            </motion.span>
+                          )}
+                        </motion.div>
                       )}
                     </div>
                   )
