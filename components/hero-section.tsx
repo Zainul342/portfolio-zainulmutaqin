@@ -23,11 +23,14 @@ const TopographicCanvas = dynamic(
   { ssr: false, loading: () => <GlobeLoadingSkeleton /> },
 )
 
-const BOOT_LINES = [
-  { text: '> loading system modules...', color: '#cba6f7' },
-  { text: '> initializing zainul.mutaqin...', color: '#cba6f7' },
-  { text: '> status: full-stack developer | systems explorer', color: '#89b4fa' },
-  { text: '> session active. ready.', color: '#a6e3a1' },
+const systemInfo = [
+  { key: "os", value: "EndeavourOS x86_64" },
+  { key: "host", value: "Lenovo ThinkPad T490s" },
+  { key: "ker", value: "Linux 6.8.9-arch1-1" },
+  { key: "wm", value: "bspwm" },
+  { key: "term", value: "kitty" },
+  { key: "sh", value: "fish" },
+  { key: "up", value: "15 hours, 39 mins" },
 ]
 
 export function HeroSection() {
@@ -54,7 +57,7 @@ export function HeroSection() {
   if (!mounted) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a]">
-        <div className="w-full max-w-xl mx-auto bg-[#0a0a0a] border border-white/10 rounded-none h-48 animate-pulse" />
+        <div className="w-full max-w-xl mx-auto bg-[#0a0a0a]/60 backdrop-blur-md border border-white/10 rounded-md h-[210px] animate-pulse" />
       </div>
     )
   }
@@ -97,60 +100,78 @@ export function HeroSection() {
         <div className="flex flex-col items-center w-full">
           {/* Terminal window */}
           <div
-            className="w-full max-w-xl rounded-none overflow-hidden mb-10 border border-white/10 bg-[#0a0a0a]"
+            className="w-full max-w-xl rounded-md overflow-hidden mb-10 border border-white/10 bg-[#0a0a0a]/60 backdrop-blur-md"
           >
             {/* Minimal Tiling Window Header */}
-            <div className="flex items-center justify-between px-4 py-2 bg-[#121212] border-b border-white/10 select-none font-mono text-[11px] text-[#89b4fa]">
-              <div className="w-12 text-left text-[#585b70]">ghostty</div>
-              <div className="flex-1 text-center text-[#a6adc8]">zainul@archlinux:~</div>
+            <div className="flex items-center justify-between px-4 py-2 bg-[#121212]/40 border-b border-white/10 select-none font-mono text-[11px] text-[#89b4fa]">
+              <div className="w-12 text-left text-[#585b70]">kitty</div>
+              <div className="flex-1 text-center text-[#a6adc8]">zainul@thinkpad:~</div>
               <div className="w-12 text-right text-[#585b70]">80x24</div>
             </div>
 
             {/* Terminal body */}
             <div
-              className="p-5 font-mono text-[13px] leading-relaxed min-h-[128px] text-left w-full space-y-1"
+              className="p-6 font-mono text-[13px] leading-relaxed min-h-[160px] text-left w-full grid grid-cols-12 gap-6"
               aria-live="polite"
-              aria-label="Terminal boot sequence"
+              aria-label="Terminal fetch info"
             >
-              {BOOT_LINES.map((line, idx) => {
-                const delayTime = idx * 0.3
-                const isLastLine = idx === BOOT_LINES.length - 1
+              {/* Left Column: ASCII Art */}
+              <div className="col-span-4 flex flex-col justify-start items-center select-none pt-1">
+                <motion.pre
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="font-mono text-xs leading-normal text-[#cba6f7]"
+                >
+{` (\\_/)
+ (o.o)
+ (> <)`}
+                </motion.pre>
+              </div>
 
-                return (
-                  <div key={idx} className="min-h-[20px] mb-1">
+              {/* Right Column: System specs */}
+              <div className="col-span-8 flex flex-col justify-center space-y-1.5">
+                {systemInfo.map((info, idx) => {
+                  const delayTime = 0.2 + idx * 0.08
+                  const isLastLine = idx === systemInfo.length - 1
+
+                  return (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: delayTime, ease: "easeOut" }}
+                      key={info.key}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: delayTime, ease: "easeOut" }}
                       onAnimationComplete={() => {
                         if (isLastLine) {
                           setRevealed(true)
                         }
                       }}
-                      style={{ color: line.color }}
+                      className="flex font-mono text-[12px] leading-tight"
                     >
-                      {line.text}
-                      {isLastLine && (
-                        <motion.span
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: [0, 1, 0] }}
-                          transition={{
-                            opacity: {
-                              repeat: Infinity,
-                              duration: 0.8,
-                              ease: "linear",
-                            },
-                            delay: delayTime + 0.4,
-                          }}
-                          className="text-[#a6e3a1] font-bold inline-block ml-1 font-mono"
-                        >
-                          _
-                        </motion.span>
-                      )}
+                      <span className="text-[#cba6f7] min-w-[42px] select-none">{info.key}</span>
+                      <span className="text-[#585b70] mr-2 select-none">:</span>
+                      <span className="text-[#cdd6f4]">{info.value}</span>
                     </motion.div>
-                  </div>
-                )
-              })}
+                  )
+                })}
+
+                {/* Color blocks fetch visual */}
+                <motion.div
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.2 + systemInfo.length * 0.08, ease: "easeOut" }}
+                  className="flex gap-1 pt-2 select-none"
+                >
+                  <span className="w-5 h-2.5 bg-[#45475a]" />
+                  <span className="w-5 h-2.5 bg-[#f38ba8]" />
+                  <span className="w-5 h-2.5 bg-[#a6e3a1]" />
+                  <span className="w-5 h-2.5 bg-[#f9e2af]" />
+                  <span className="w-5 h-2.5 bg-[#89b4fa]" />
+                  <span className="w-5 h-2.5 bg-[#cba6f7]" />
+                  <span className="w-5 h-2.5 bg-[#89dceb]" />
+                  <span className="w-5 h-2.5 bg-[#cdd6f4]" />
+                </motion.div>
+              </div>
             </div>
           </div>
 
