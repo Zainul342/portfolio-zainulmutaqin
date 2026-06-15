@@ -34,29 +34,21 @@ export function HeroSection() {
   const [mounted, setMounted] = useState(false)
   const [revealed, setRevealed] = useState(false)
   const [glitching, setGlitching] = useState(false)
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
   
   const heroRef = useRef<HTMLDivElement>(null)
   const nameRef = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
     setMounted(true)
-    if (typeof window !== 'undefined') {
-      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-      setPrefersReducedMotion(mediaQuery.matches)
-      if (mediaQuery.matches) {
-        setRevealed(true)
-      }
-    }
   }, [])
 
   useEffect(() => {
-    if (revealed && !prefersReducedMotion) {
+    if (revealed) {
       setGlitching(true)
       const t = setTimeout(() => setGlitching(false), 700)
       return () => clearTimeout(t)
     }
-  }, [revealed, prefersReducedMotion])
+  }, [revealed])
 
   // SSR Skeleton to prevent hydration mismatch and ensure animations run cleanly on client
   if (!mounted) {
@@ -107,14 +99,16 @@ export function HeroSection() {
           <div
             className="w-full max-w-xl rounded-lg overflow-hidden mb-10 glow-card border border-white/5"
           >
-            {/* Traffic lights bar */}
-            <div className="traffic-lights border-b border-white/5">
-              <span className="traffic-light" style={{ backgroundColor: '#f38ba8' }} aria-hidden="true" />
-              <span className="traffic-light" style={{ backgroundColor: '#f9e2af' }} aria-hidden="true" />
-              <span className="traffic-light" style={{ backgroundColor: '#a6e3a1' }} aria-hidden="true" />
-              <span className="font-mono text-xs ml-2" style={{ color: '#6c7086' }}>
-                zainul@portfolio ~ terminal
-              </span>
+            {/* Minimal Tiling Window Header */}
+            <div className="flex items-center justify-between px-4 py-2.5 bg-[#08080a] border-b border-white/5 select-none">
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#cba6f7]" aria-hidden="true" />
+                <span className="font-mono text-xs text-[#a6adc8] font-medium">zainul@thinkpad:~</span>
+              </div>
+              <div className="font-mono text-[10px] text-[#6c7086] flex items-center gap-3">
+                <span>80x24</span>
+                <span>bspwm</span>
+              </div>
             </div>
 
             {/* Terminal body */}
@@ -124,50 +118,41 @@ export function HeroSection() {
               aria-label="Terminal boot sequence"
             >
               {BOOT_LINES.map((line, idx) => {
-                const delayTime = idx * 0.4
+                const delayTime = idx * 0.3
                 const isLastLine = idx === BOOT_LINES.length - 1
 
                 return (
                   <div key={idx} className="min-h-[20px] mb-1">
-                    {prefersReducedMotion ? (
-                      <div style={{ color: line.color }}>
-                        {line.text}
-                        {isLastLine && (
-                          <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
-                        )}
-                      </div>
-                    ) : (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: delayTime, ease: "easeOut" }}
-                        onAnimationComplete={() => {
-                          if (isLastLine) {
-                            setRevealed(true)
-                          }
-                        }}
-                        style={{ color: line.color }}
-                      >
-                        {line.text}
-                        {isLastLine && (
-                          <motion.span
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: [0, 1, 0] }}
-                            transition={{
-                              opacity: {
-                                repeat: Infinity,
-                                duration: 0.8,
-                                ease: "linear",
-                              },
-                              delay: delayTime + 0.5,
-                            }}
-                            className="text-[#a6e3a1] font-bold inline-block ml-1"
-                          >
-                            _
-                          </motion.span>
-                        )}
-                      </motion.div>
-                    )}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: delayTime, ease: "easeOut" }}
+                      onAnimationComplete={() => {
+                        if (isLastLine) {
+                          setRevealed(true)
+                        }
+                      }}
+                      style={{ color: line.color }}
+                    >
+                      {line.text}
+                      {isLastLine && (
+                        <motion.span
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: [0, 1, 0] }}
+                          transition={{
+                            opacity: {
+                              repeat: Infinity,
+                              duration: 0.8,
+                              ease: "linear",
+                            },
+                            delay: delayTime + 0.4,
+                          }}
+                          className="text-[#a6e3a1] font-bold inline-block ml-1"
+                        >
+                          _
+                        </motion.span>
+                      )}
+                    </motion.div>
                   </div>
                 )
               })}
