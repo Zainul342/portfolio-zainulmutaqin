@@ -34,6 +34,7 @@ export function HeroSection() {
   const [done, setDone] = useState(false)
   const [visibleLinesCount, setVisibleLinesCount] = useState(0)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const [mounted, setMounted] = useState(false)
   
   const [revealed, setRevealed] = useState(false)
   const [hasRevealed, setHasRevealed] = useState(false)
@@ -42,6 +43,7 @@ export function HeroSection() {
   const nameRef = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
+    setMounted(true)
     if (typeof window !== 'undefined') {
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
       setPrefersReducedMotion(mediaQuery.matches)
@@ -52,9 +54,9 @@ export function HeroSection() {
     }
   }, [])
 
-  // Timer sequence to animate lines one by one
+  // Timer sequence to animate lines one by one (only after client mounting)
   useEffect(() => {
-    if (prefersReducedMotion) return
+    if (!mounted || prefersReducedMotion) return
 
     if (visibleLinesCount < BOOT_LINES.length) {
       const delay = visibleLinesCount === 0 ? 200 : 800
@@ -65,9 +67,11 @@ export function HeroSection() {
     } else {
       setDone(true)
     }
-  }, [visibleLinesCount, prefersReducedMotion])
+  }, [visibleLinesCount, prefersReducedMotion, mounted])
 
   useEffect(() => {
+    if (!mounted) return
+
     if (done) {
       if (!hasRevealed) {
         setHasRevealed(true)
@@ -93,7 +97,7 @@ export function HeroSection() {
       }, 5500)
       return () => clearTimeout(loopTimer)
     }
-  }, [done, hasRevealed, prefersReducedMotion])
+  }, [done, hasRevealed, prefersReducedMotion, mounted])
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const hero = heroRef.current
@@ -150,40 +154,46 @@ export function HeroSection() {
               aria-live="polite"
               aria-label="Terminal boot sequence"
             >
-              {BOOT_LINES.map((line, idx) => {
-                const isVisible = prefersReducedMotion || visibleLinesCount > idx
-                const isCurrent = prefersReducedMotion 
-                  ? idx === BOOT_LINES.length - 1 
-                  : visibleLinesCount === idx + 1
-                const isLastLine = idx === BOOT_LINES.length - 1
+              {!mounted ? (
+                <div className="min-h-[20px] mb-1">
+                  <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
+                </div>
+              ) : (
+                BOOT_LINES.map((line, idx) => {
+                  const isVisible = prefersReducedMotion || visibleLinesCount > idx
+                  const isCurrent = prefersReducedMotion 
+                    ? idx === BOOT_LINES.length - 1 
+                    : visibleLinesCount === idx + 1
+                  const isLastLine = idx === BOOT_LINES.length - 1
 
-                return (
-                  <div key={idx} className="min-h-[20px] mb-1">
-                    {isVisible && (
-                      prefersReducedMotion ? (
-                        <div style={{ color: line.color }}>
-                          {line.text}
-                          {isCurrent && (
-                            <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
-                          )}
-                        </div>
-                      ) : (
-                        <motion.div
-                          initial={{ opacity: 0, y: 4 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                          style={{ color: line.color }}
-                        >
-                          {line.text}
-                          {((isCurrent && !done) || (isLastLine && done)) && (
-                            <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
-                          )}
-                        </motion.div>
-                      )
-                    )}
-                  </div>
-                )
-              })}
+                  return (
+                    <div key={idx} className="min-h-[20px] mb-1">
+                      {isVisible && (
+                        prefersReducedMotion ? (
+                          <div style={{ color: line.color }}>
+                            {line.text}
+                            {isCurrent && (
+                              <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
+                            )}
+                          </div>
+                        ) : (
+                          <motion.div
+                            initial={{ opacity: 0, y: 4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                            style={{ color: line.color }}
+                          >
+                            {line.text}
+                            {((isCurrent && !done) || (isLastLine && done)) && (
+                              <span className="terminal-cursor text-[#a6e3a1] font-bold">_</span>
+                            )}
+                          </motion.div>
+                        )
+                      )}
+                    </div>
+                  )
+                })
+              )}
             </div>
           </div>
 
