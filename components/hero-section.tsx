@@ -213,7 +213,7 @@ export function HeroSection() {
 
             <p
               className="text-lg sm:text-xl leading-relaxed text-pretty max-w-xl text-center"
-              style={{ color: '#a6adc8' }}
+              style={{ color: '#e5e5e5' }}
             >
               <TextReveal
                 text="Building high-performance web systems and exploring terminal environments. Crafting clean, "
@@ -235,22 +235,22 @@ export function HeroSection() {
 
             {/* System metadata */}
             <div
-              className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 mt-3 mb-8 font-mono text-[10px]"
-              style={{ color: '#a6adc8' }}
+              className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 mt-3 mb-8 font-mono text-xs"
+              style={{ color: '#e5e5e5' }}
             >
               <div className="flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: '#a6e3a1' }} />
-                <span style={{ color: '#7f849c' }}>LOC:</span>
+                <span style={{ color: '#a6adc8' }}>LOC:</span>
                 <span style={{ color: '#cdd6f4' }}>6.2088° S, 106.8456° E</span>
               </div>
               <span className="text-white/10">|</span>
               <div className="flex items-center gap-1">
-                <span style={{ color: '#7f849c' }}>ZONE:</span>
+                <span style={{ color: '#a6adc8' }}>ZONE:</span>
                 <span style={{ color: '#cdd6f4' }}>UTC+07.00</span>
               </div>
               <span className="text-white/10">|</span>
               <div className="flex items-center gap-1">
-                <span style={{ color: '#7f849c' }}>STATUS:</span>
+                <span style={{ color: '#a6adc8' }}>STATUS:</span>
                 <span style={{ color: '#a6e3a1' }}>ONLINE</span>
               </div>
             </div>
@@ -300,14 +300,14 @@ export function HeroSection() {
             <button
               onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
               className="font-mono text-xs transition-colors cursor-none"
-              style={{ color: '#6c7086' }}
+              style={{ color: '#a6adc8' }}
               onMouseEnter={(e) => { e.currentTarget.style.color = '#cba6f7' }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = '#6c7086' }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = '#a6adc8' }}
               aria-label="Open command palette"
             >
               press{' '}
               <kbd
-                className="px-1.5 py-0.5 rounded text-[10px] bg-white/5 border border-white/10"
+                className="px-1.5 py-0.5 rounded text-xs bg-white/5 border border-white/10"
                 style={{ color: '#cba6f7' }}
               >
                 cmd+k
@@ -322,11 +322,11 @@ export function HeroSection() {
       {revealed && (
         <div
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-10"
-          style={{ color: '#6c7086' }}
+          style={{ color: '#a6adc8' }}
           aria-hidden="true"
         >
-          <span className="font-mono text-[10px] tracking-widest uppercase">scroll</span>
-          <div className="w-px h-8" style={{ background: 'linear-gradient(to bottom, #6c7086, transparent)' }} />
+          <span className="font-mono text-xs tracking-widest uppercase">scroll</span>
+          <div className="w-px h-8" style={{ background: 'linear-gradient(to bottom, #a6adc8, transparent)' }} />
         </div>
       )}
     </section>

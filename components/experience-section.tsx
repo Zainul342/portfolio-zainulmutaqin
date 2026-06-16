@@ -56,7 +56,7 @@ export function ExperienceSection() {
     <section
       id="experience"
       ref={ref as React.RefObject<HTMLElement>}
-      className="relative py-28 md:py-36 px-6"
+      className="relative py-12 px-6"
       aria-label="Experience Timeline"
     >
       <div className="max-w-3xl mx-auto">
@@ -84,20 +84,20 @@ export function ExperienceSection() {
                     className="absolute -left-[35px] top-1.5 w-6 h-6 rounded-full border flex items-center justify-center transition-all duration-300"
                     style={{
                       backgroundColor: isHovered ? '#1e1e2e' : '#0a0a0c',
-                      borderColor: isHovered ? '#89b4fa' : '#313244',
+                      borderColor: isHovered ? '#89b4fa' : '#45475a',
                     }}
                   >
                     <GitCommit
                       size={12}
                       style={{
-                        color: isHovered ? '#89b4fa' : '#585b70',
+                        color: isHovered ? '#89b4fa' : '#a6adc8',
                       }}
                     />
                   </div>
 
                   <Reveal delay={0.1 * i} direction="up">
                     <div
-                      className="p-6 rounded-[3px] border transition-all duration-200 bg-black/45 backdrop-blur-md"
+                      className="p-6 rounded-none border transition-all duration-200 bg-black/45 backdrop-blur-md"
                       style={{
                         borderColor: isHovered ? '#89b4fa' : '#313244',
                         transform: isHovered ? 'translateX(4px)' : 'none',
@@ -105,7 +105,7 @@ export function ExperienceSection() {
                       }}
                     >
                       {/* Git log format lines */}
-                      <div className="font-mono text-xs space-y-1 mb-4 border-b border-white/5 pb-3 text-[#585b70]">
+                      <div className="font-mono text-xs space-y-1 mb-4 border-b border-white/5 pb-3 text-neutral-400">
                         <div className="flex items-center gap-2">
                           <span style={{ color: '#f38ba8' }}>commit</span>
                           <span style={{ color: '#cba6f7' }} className="font-bold">
@@ -134,8 +134,8 @@ export function ExperienceSection() {
 
                         <ul className="space-y-2.5">
                           {event.details.map((detail, idx) => (
-                            <li key={idx} className="text-xs leading-relaxed text-[#a6adc8] flex items-start gap-2">
-                              <span style={{ color: '#45475a' }} className="font-mono mt-0.5 select-none">
+                            <li key={idx} className="text-xs leading-relaxed text-neutral-200 flex items-start gap-2">
+                              <span style={{ color: '#585b70' }} className="font-mono mt-0.5 select-none">
                                 {idx + 1}.
                               </span>
                               <span>{detail}</span>

@@ -35,16 +35,16 @@ function NeovimBuffer({
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`relative rounded-[3px] border overflow-hidden flex flex-col transition-all duration-200 select-none bg-black/45 backdrop-blur-md min-h-[300px] ${className}`}
+      className={`relative rounded-none border overflow-hidden flex flex-col transition-all duration-200 select-none bg-black/45 backdrop-blur-md min-h-[300px] ${className}`}
       style={{
         borderColor: hovered ? accentColor : '#313244',
         boxShadow: hovered ? '0 4px 20px rgba(0, 0, 0, 0.4)' : 'none',
       }}
     >
       {/* Tabline / Header */}
-      <div className="flex items-center justify-between px-3 py-1.5 bg-[#0a0a0c]/80 border-b border-white/5 font-mono text-[9px] text-[#585b70]">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-[#0a0a0c]/80 border-b border-white/5 font-mono text-xs text-neutral-400">
         <div className="flex items-center gap-1.5">
-          <span style={{ color: hovered ? accentColor : '#585b70' }}></span>
+          <span style={{ color: hovered ? accentColor : '#a6adc8' }}></span>
           <span>{filename}</span>
         </div>
         <div className="flex items-center gap-2">
@@ -56,7 +56,7 @@ function NeovimBuffer({
       {/* Editor Content Area */}
       <div className="flex flex-grow relative">
         {/* Line Gutter */}
-        <div className="flex flex-col items-end pr-2.5 pl-2 py-4 select-none font-mono text-[10px] text-[#313244] border-r border-white/5 bg-[#0a0a0c]/20 w-8">
+        <div className="flex flex-col items-end pr-2.5 pl-2 py-4 select-none font-mono text-xs text-neutral-500 border-r border-white/5 bg-[#0a0a0c]/20 w-9">
           {lineNumbers.map((num) => (
             <span key={num} className="leading-6">{num}</span>
           ))}
@@ -69,7 +69,7 @@ function NeovimBuffer({
       </div>
 
       {/* Lualine Status Bar */}
-      <div className="flex items-center justify-between font-mono text-[9px] bg-[#0f0f14] text-[#a6adc8] border-t border-white/5 h-5 select-none">
+      <div className="flex items-center justify-between font-mono text-xs bg-[#0f0f14] text-[#a6adc8] border-t border-white/5 h-6 select-none">
         <div className="flex items-center h-full">
           {/* Mode indicator */}
           <div
@@ -88,19 +88,19 @@ function NeovimBuffer({
             <span>main</span>
           </div>
           {/* Filename status */}
-          <div className="px-2 text-[#585b70] hidden sm:block max-w-[120px] truncate">
+          <div className="px-2 text-neutral-400 hidden sm:block max-w-[120px] truncate">
             {filename}
           </div>
         </div>
 
         <div className="flex items-center h-full">
-          <div className="px-2 text-[#585b70] hidden xs:block">
+          <div className="px-2 text-neutral-400 hidden xs:block">
             utf-8
           </div>
           <div
-            className="px-2 h-full flex items-center font-bold text-[#1e1e2e]"
+            className="px-2 h-full flex items-center font-bold text-[#1e1e2e] transition-colors"
             style={{
-              backgroundColor: hovered ? accentColor : '#585b70',
+              backgroundColor: hovered ? accentColor : '#45475a',
             }}
           >
             {hovered ? 'INSERT' : '100%'}
@@ -128,12 +128,12 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         <div>
           {/* Header */}
           <div className="flex items-center justify-between mb-3 pb-2 border-b border-white/5">
-            <span className="font-mono text-[9px] text-[#585b70]">
+            <span className="font-mono text-xs text-neutral-400">
               ~/{project.id}
             </span>
             {project.featured && (
               <span
-                className="font-mono text-[8px] tracking-wide uppercase px-2 py-0.5 rounded-[2px]"
+                className="font-mono text-xs tracking-wide uppercase px-2 py-0.5 rounded-[2px]"
                 style={{
                   backgroundColor: 'rgba(249, 226, 175, 0.08)',
                   color: '#f9e2af',
@@ -155,14 +155,14 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             </Link>
           </h3>
 
-          <p className="text-xs leading-relaxed text-[#a6adc8] mb-4" style={{ lineHeight: 1.6 }}>
+          <p className="text-xs leading-relaxed text-neutral-200 mb-4" style={{ lineHeight: 1.6 }}>
             {project.description}
           </p>
 
           {/* Field Note HUD block (expanded on hover) */}
           {project.fieldNote && (
             <div 
-              className={`font-mono text-[9px] border border-dashed rounded-[2px] p-2.5 mb-4 bg-white/[0.01] overflow-hidden transition-all duration-300 ${
+              className={`font-mono text-xs border border-dashed rounded-[2px] p-2.5 mb-4 bg-white/[0.01] overflow-hidden transition-all duration-300 ${
                 hovered ? 'max-h-24 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-1 pointer-events-none'
               }`}
               style={{ 
@@ -176,15 +176,15 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               </div>
               <div className="flex flex-col gap-0.5">
                 <div className="flex justify-between">
-                  <span style={{ color: '#585b70' }}>CORE ARCH:</span>
+                  <span style={{ color: '#a6adc8' }}>CORE ARCH:</span>
                   <span style={{ color: '#cdd6f4' }}>{project.fieldNote.terrain}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span style={{ color: '#585b70' }}>PRIMARY DEPLOY:</span>
+                  <span style={{ color: '#a6adc8' }}>PRIMARY DEPLOY:</span>
                   <span style={{ color: '#cdd6f4' }}>{project.fieldNote.route}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span style={{ color: '#585b70' }}>SYSTEM STATUS:</span>
+                  <span style={{ color: '#a6adc8' }}>SYSTEM STATUS:</span>
                   <span style={{ color: project.accentColor }}>{project.fieldNote.signal}</span>
                 </div>
               </div>
@@ -198,7 +198,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             {project.stack.map((s) => (
               <span
                 key={s.label}
-                className="font-mono text-[9px] px-1.5 py-0.5 rounded-[2px] border border-white/5 bg-white/[0.01]"
+                className="font-mono text-xs px-1.5 py-0.5 rounded-[2px] border border-white/5 bg-white/[0.01]"
                 style={{ color: s.color ?? '#a6adc8' }}
               >
                 {s.label}
@@ -207,7 +207,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           </div>
 
           {/* Links */}
-          <div className="flex items-center gap-4 pt-3 border-t border-white/5 font-mono text-[10px]">
+          <div className="flex items-center gap-4 pt-3 border-t border-white/5 font-mono text-xs">
             <Link
               href={`/projects/${project.slug}`}
               className="flex items-center gap-1.5 text-[#cba6f7] transition-all duration-150 cursor-none"
@@ -222,7 +222,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-[#585b70] transition-colors duration-150 cursor-none"
+                className="flex items-center gap-1.5 text-neutral-400 transition-colors duration-150 cursor-none"
                 onMouseEnter={(e) => { e.currentTarget.style.color = '#cdd6f4' }}
                 onMouseLeave={(e) => { e.currentTarget.style.color = '#585b70' }}
                 aria-label={`View ${project.name} on GitHub`}
@@ -261,7 +261,7 @@ export function ProjectsSection() {
     <section
       id="projects"
       ref={ref as React.RefObject<HTMLElement>}
-      className="relative py-28 md:py-36 px-6"
+      className="relative py-12 px-6"
       aria-label="Projects"
     >
       <div className="max-w-5xl mx-auto">
@@ -272,7 +272,7 @@ export function ProjectsSection() {
             <div className="flex-1 h-px bg-white/5" />
           </div>
 
-          <p className="font-mono text-xs mb-10 text-[#585b70]">
+          <p className="font-mono text-xs mb-10 text-neutral-400">
             field notes from systems and applications I&apos;ve mapped, built, and refined
           </p>
 
@@ -291,7 +291,7 @@ export function ProjectsSection() {
               href="https://github.com/Zainul342"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 font-mono text-xs text-[#585b70] transition-colors duration-150 cursor-none"
+              className="flex items-center gap-2 font-mono text-xs text-neutral-400 transition-colors duration-150 cursor-none"
               onMouseEnter={(e) => { e.currentTarget.style.color = '#cba6f7' }}
               onMouseLeave={(e) => { e.currentTarget.style.color = '#585b70' }}
             >

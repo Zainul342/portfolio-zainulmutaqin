@@ -35,16 +35,16 @@ function NeovimBuffer({
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={`relative rounded-[3px] border overflow-hidden flex flex-col transition-all duration-200 select-none bg-black/45 backdrop-blur-md min-h-[300px] ${className}`}
+      className={`relative rounded-none border overflow-hidden flex flex-col transition-all duration-200 select-none bg-black/45 backdrop-blur-md min-h-[300px] ${className}`}
       style={{
         borderColor: hovered ? accentColor : '#313244',
         boxShadow: hovered ? '0 4px 20px rgba(0, 0, 0, 0.4)' : 'none',
       }}
     >
       {/* Tabline / Header */}
-      <div className="flex items-center justify-between px-3 py-1.5 bg-[#0a0a0c]/80 border-b border-white/5 font-mono text-[9px] text-[#585b70]">
+      <div className="flex items-center justify-between px-3 py-1.5 bg-[#0a0a0c]/80 border-b border-white/5 font-mono text-xs text-neutral-400">
         <div className="flex items-center gap-1.5">
-          <span style={{ color: hovered ? accentColor : '#585b70' }}></span>
+          <span style={{ color: hovered ? accentColor : '#a6adc8' }}></span>
           <span>{filename}</span>
         </div>
         <div className="flex items-center gap-2">
@@ -56,7 +56,7 @@ function NeovimBuffer({
       {/* Editor Content Area */}
       <div className="flex flex-grow relative">
         {/* Line Gutter */}
-        <div className="flex flex-col items-end pr-2.5 pl-2 py-4 select-none font-mono text-[10px] text-[#313244] border-r border-white/5 bg-[#0a0a0c]/20 w-8">
+        <div className="flex flex-col items-end pr-2.5 pl-2 py-4 select-none font-mono text-xs text-neutral-500 border-r border-white/5 bg-[#0a0a0c]/20 w-9">
           {lineNumbers.map((num) => (
             <span key={num} className="leading-6">{num}</span>
           ))}
@@ -69,7 +69,7 @@ function NeovimBuffer({
       </div>
 
       {/* Lualine Status Bar */}
-      <div className="flex items-center justify-between font-mono text-[9px] bg-[#0f0f14] text-[#a6adc8] border-t border-white/5 h-5 select-none">
+      <div className="flex items-center justify-between font-mono text-xs bg-[#0f0f14] text-[#a6adc8] border-t border-white/5 h-6 select-none">
         <div className="flex items-center h-full">
           {/* Mode indicator */}
           <div
@@ -88,19 +88,19 @@ function NeovimBuffer({
             <span>main</span>
           </div>
           {/* Filename status */}
-          <div className="px-2 text-[#585b70] hidden sm:block max-w-[120px] truncate">
+          <div className="px-2 text-neutral-400 hidden sm:block max-w-[120px] truncate">
             {filename}
           </div>
         </div>
 
         <div className="flex items-center h-full">
-          <div className="px-2 text-[#585b70] hidden xs:block">
+          <div className="px-2 text-neutral-400 hidden xs:block">
             utf-8
           </div>
           <div
-            className="px-2 h-full flex items-center font-bold text-[#1e1e2e]"
+            className="px-2 h-full flex items-center font-bold text-[#1e1e2e] transition-colors"
             style={{
-              backgroundColor: hovered ? accentColor : '#585b70',
+              backgroundColor: hovered ? accentColor : '#45475a',
             }}
           >
             {hovered ? 'INSERT' : '100%'}
@@ -163,7 +163,7 @@ export function ContactSection() {
     <section
       id="contact"
       ref={ref as React.RefObject<HTMLElement>}
-      className="relative py-28 md:py-36 px-6"
+      className="relative py-12 px-6"
       aria-label="Contact"
     >
       <div className="relative max-w-2xl mx-auto">
@@ -205,12 +205,12 @@ export function ContactSection() {
                   <div className="font-mono text-xs text-center" style={{ color: '#a6e3a1' }}>
                     message sent successfully
                   </div>
-                  <div className="font-mono text-[10px]" style={{ color: '#585b70' }}>
+                  <div className="font-mono text-xs" style={{ color: '#585b70' }}>
                     {'>'} I&apos;ll get back to you soon. Thanks!
                   </div>
                   <button
                     onClick={() => setFormState('idle')}
-                    className="mt-2 font-mono text-[10px] px-3 py-1.5 rounded-[2px] transition-colors cursor-none"
+                    className="mt-2 font-mono text-xs px-3 py-1.5 rounded-[2px] transition-colors cursor-none"
                     style={{ backgroundColor: '#313244', color: '#a6adc8', border: '1px solid #45475a' }}
                     onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#cba6f7'; e.currentTarget.style.color = '#cba6f7' }}
                     onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#45475a'; e.currentTarget.style.color = '#a6adc8' }}
@@ -223,7 +223,7 @@ export function ContactSection() {
                   <div>
                     <label
                       htmlFor="name"
-                      className="block font-mono text-[10px] mb-1.5"
+                      className="block font-mono text-xs mb-1.5"
                       style={{ color: '#585b70' }}
                     >
                       {'>'} name
@@ -237,7 +237,7 @@ export function ContactSection() {
                       onBlur={() => setFocusedField(null)}
                       placeholder="Your name"
                       required
-                      className="w-full px-3 py-2 rounded-[2px] font-mono text-sm cursor-none"
+                      className="w-full px-3 py-2 rounded-none font-mono text-sm cursor-none"
                       style={inputStyle('name')}
                     />
                   </div>
@@ -245,7 +245,7 @@ export function ContactSection() {
                   <div>
                     <label
                       htmlFor="email"
-                      className="block font-mono text-[10px] mb-1.5"
+                      className="block font-mono text-xs mb-1.5"
                       style={{ color: '#585b70' }}
                     >
                       {'>'} email
@@ -259,7 +259,7 @@ export function ContactSection() {
                       onBlur={() => setFocusedField(null)}
                       placeholder="your@email.com"
                       required
-                      className="w-full px-3 py-2 rounded-[2px] font-mono text-sm cursor-none"
+                      className="w-full px-3 py-2 rounded-none font-mono text-sm cursor-none"
                       style={inputStyle('email')}
                     />
                   </div>
@@ -267,7 +267,7 @@ export function ContactSection() {
                   <div>
                     <label
                       htmlFor="message"
-                      className="block font-mono text-[10px] mb-1.5"
+                      className="block font-mono text-xs mb-1.5"
                       style={{ color: '#585b70' }}
                     >
                       {'>'} message
@@ -281,13 +281,13 @@ export function ContactSection() {
                       onBlur={() => setFocusedField(null)}
                       placeholder="What's on your mind?"
                       required
-                      className="w-full px-3 py-2 rounded-[2px] font-mono text-sm resize-none cursor-none"
+                      className="w-full px-3 py-2 rounded-none font-mono text-sm resize-none cursor-none"
                       style={inputStyle('message')}
                     />
                   </div>
 
                   {formState === 'error' && (
-                    <div className="flex items-center gap-2 font-mono text-[10px]" style={{ color: '#f38ba8' }}>
+                    <div className="flex items-center gap-2 font-mono text-xs" style={{ color: '#f38ba8' }}>
                       <AlertCircle size={12} />
                       something went wrong. please try again.
                     </div>
@@ -296,7 +296,7 @@ export function ContactSection() {
                   <button
                     type="submit"
                     disabled={formState === 'sending'}
-                    className="w-full flex items-center justify-center gap-2 py-2 rounded-[2px] font-mono text-xs font-medium transition-all duration-200 cursor-none"
+                    className="w-full flex items-center justify-center gap-2 py-2 rounded-none font-mono text-xs font-medium transition-all duration-200 cursor-none"
                     style={{
                       backgroundColor: formState === 'sending' ? '#313244' : '#cba6f7',
                       color: formState === 'sending' ? '#6c7086' : '#1e1e2e',
