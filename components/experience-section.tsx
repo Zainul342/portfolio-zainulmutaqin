@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { GitCommit, Calendar, Hash } from 'lucide-react'
+import { GitCommit, Calendar } from 'lucide-react'
 import { Reveal } from '@/components/motion-wrapper'
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer'
 
@@ -56,11 +56,9 @@ export function ExperienceSection() {
     <section
       id="experience"
       ref={ref as React.RefObject<HTMLElement>}
-      className="relative py-32 md:py-44 px-6"
+      className="relative py-28 md:py-36 px-6"
       aria-label="Experience Timeline"
     >
-
-
       <div className="max-w-3xl mx-auto">
         <Reveal delay={0.05} direction="up">
           {/* Section label */}
@@ -85,28 +83,29 @@ export function ExperienceSection() {
                   <div
                     className="absolute -left-[35px] top-1.5 w-6 h-6 rounded-full border flex items-center justify-center transition-all duration-300"
                     style={{
-                      backgroundColor: isHovered ? 'var(--ctp-base)' : 'var(--ctp-crust)',
-                      borderColor: isHovered ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                      backgroundColor: isHovered ? '#1e1e2e' : '#0a0a0c',
+                      borderColor: isHovered ? '#89b4fa' : '#313244',
                     }}
                   >
                     <GitCommit
                       size={12}
                       style={{
-                        color: isHovered ? '#ffffff' : '#6c7086',
+                        color: isHovered ? '#89b4fa' : '#585b70',
                       }}
                     />
                   </div>
 
                   <Reveal delay={0.1 * i} direction="up">
                     <div
-                      className="p-6 rounded-xl border transition-all duration-300 bento-card"
+                      className="p-6 rounded-[3px] border transition-all duration-200 bg-black/45 backdrop-blur-md"
                       style={{
-                        borderColor: isHovered ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                        borderColor: isHovered ? '#89b4fa' : '#313244',
                         transform: isHovered ? 'translateX(4px)' : 'none',
+                        boxShadow: isHovered ? '0 4px 20px rgba(0, 0, 0, 0.4)' : 'none',
                       }}
                     >
                       {/* Git log format lines */}
-                      <div className="font-mono text-xs space-y-1 mb-4 border-b border-white/5 pb-3 text-[#6c7086]">
+                      <div className="font-mono text-xs space-y-1 mb-4 border-b border-white/5 pb-3 text-[#585b70]">
                         <div className="flex items-center gap-2">
                           <span style={{ color: '#f38ba8' }}>commit</span>
                           <span style={{ color: '#cba6f7' }} className="font-bold">

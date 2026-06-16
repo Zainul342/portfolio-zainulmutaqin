@@ -175,9 +175,7 @@
 .bento-card,
 .project-card,
 .contact-card {
-  background: #121212 !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
 /* Animated dot grid */
