@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { MapPin, Coffee, Cpu, Clock, Compass } from 'lucide-react'
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer'
 import { Reveal } from '@/components/motion-wrapper'
@@ -78,7 +78,32 @@ function NeovimBuffer({
   className = '',
 }: NeovimBufferProps) {
   const [hovered, setHovered] = useState(false)
-  const lineNumbers = Array.from({ length: linesCount }, (_, i) => i + 1)
+  const [lines, setLines] = useState(linesCount)
+  const contentRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!contentRef.current) return
+
+    const calculateLines = () => {
+      if (!contentRef.current) return
+      const height = contentRef.current.offsetHeight
+      // Gutter padding is py-4 (32px total), line-height is 24px (leading-6)
+      const calculatedLines = Math.max(linesCount, Math.ceil(height / 24))
+      setLines(calculatedLines)
+    }
+
+    calculateLines()
+
+    if (typeof window !== 'undefined' && 'ResizeObserver' in window) {
+      const observer = new ResizeObserver(() => {
+        calculateLines()
+      })
+      observer.observe(contentRef.current)
+      return () => observer.disconnect()
+    }
+  }, [linesCount])
+
+  const lineNumbers = Array.from({ length: lines }, (_, i) => i + 1)
 
   return (
     <div
@@ -112,7 +137,7 @@ function NeovimBuffer({
         </div>
 
         {/* Content Pane */}
-        <div className="flex-grow p-4 pl-3 flex flex-col justify-between text-left">
+        <div ref={contentRef} className="flex-grow p-4 pl-3 flex flex-col justify-between text-left">
           {children}
         </div>
       </div>
