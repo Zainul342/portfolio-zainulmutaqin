@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { Github, ExternalLink, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer'
@@ -29,32 +29,7 @@ function NeovimBuffer({
   hovered,
   setHovered,
 }: NeovimBufferProps) {
-  const [lines, setLines] = useState(linesCount)
-  const contentRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!contentRef.current) return
-
-    const calculateLines = () => {
-      if (!contentRef.current) return
-      const height = contentRef.current.offsetHeight
-      // Gutter padding is py-4 (32px total), line-height is 24px (leading-6)
-      const calculatedLines = Math.max(linesCount, Math.ceil(height / 24))
-      setLines(calculatedLines)
-    }
-
-    calculateLines()
-
-    if (typeof window !== 'undefined' && 'ResizeObserver' in window) {
-      const observer = new ResizeObserver(() => {
-        calculateLines()
-      })
-      observer.observe(contentRef.current)
-      return () => observer.disconnect()
-    }
-  }, [linesCount])
-
-  const lineNumbers = Array.from({ length: lines }, (_, i) => i + 1)
+  const lineNumbers = Array.from({ length: linesCount }, (_, i) => i + 1)
 
   return (
     <div
@@ -88,7 +63,7 @@ function NeovimBuffer({
         </div>
 
         {/* Content Pane */}
-        <div ref={contentRef} className="flex-grow p-4 pl-3 flex flex-col justify-between text-left">
+        <div className="flex-grow p-4 pl-3 flex flex-col justify-between text-left">
           {children}
         </div>
       </div>
@@ -142,7 +117,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
   return (
     <NeovimBuffer
       filename={`~/projects/${project.id}.json`}
-      linesCount={project.featured ? 15 : 12}
+      linesCount={project.featured ? 16 : 13}
       accentColor={project.accentColor || '#a6e3a1'}
       hoverMode="INSERT"
       hovered={hovered}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { MapPin, Coffee, Cpu, Clock, Compass } from 'lucide-react'
 import { useIntersectionObserver } from '@/hooks/use-intersection-observer'
 import { Reveal } from '@/components/motion-wrapper'
@@ -78,32 +78,7 @@ function NeovimBuffer({
   className = '',
 }: NeovimBufferProps) {
   const [hovered, setHovered] = useState(false)
-  const [lines, setLines] = useState(linesCount)
-  const contentRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!contentRef.current) return
-
-    const calculateLines = () => {
-      if (!contentRef.current) return
-      const height = contentRef.current.offsetHeight
-      // Gutter padding is py-4 (32px total), line-height is 24px (leading-6)
-      const calculatedLines = Math.max(linesCount, Math.ceil(height / 24))
-      setLines(calculatedLines)
-    }
-
-    calculateLines()
-
-    if (typeof window !== 'undefined' && 'ResizeObserver' in window) {
-      const observer = new ResizeObserver(() => {
-        calculateLines()
-      })
-      observer.observe(contentRef.current)
-      return () => observer.disconnect()
-    }
-  }, [linesCount])
-
-  const lineNumbers = Array.from({ length: lines }, (_, i) => i + 1)
+  const lineNumbers = Array.from({ length: linesCount }, (_, i) => i + 1)
 
   return (
     <div
@@ -137,7 +112,7 @@ function NeovimBuffer({
         </div>
 
         {/* Content Pane */}
-        <div ref={contentRef} className="flex-grow p-4 pl-3 flex flex-col justify-between text-left">
+        <div className="flex-grow p-4 pl-3 flex flex-col justify-between text-left">
           {children}
         </div>
       </div>
@@ -222,7 +197,7 @@ export function BentoSection() {
             {/* ── 👋 BIO CARD (Spans 2 columns, 2 rows) ────────────────────────── */}
             <NeovimBuffer
               filename="bio.lua"
-              linesCount={13}
+              linesCount={18}
               accentColor="#cba6f7"
               hoverMode="INSERT"
               className="md:col-span-2 md:row-span-2"
@@ -257,7 +232,7 @@ export function BentoSection() {
             {/* ── 🖥️ TERMINAL LEARNING CARD (Spans 1 column, 2 rows) ────────────── */}
             <NeovimBuffer
               filename="learning.lua"
-              linesCount={13}
+              linesCount={18}
               accentColor="#fab387"
               hoverMode="VISUAL"
               className="md:col-span-1 md:row-span-2"
@@ -299,7 +274,7 @@ export function BentoSection() {
             {/* ── 📍 LOCATION & TIME CARD (Spans 1 column, 1 row) ──────────────── */}
             <NeovimBuffer
               filename="location.json"
-              linesCount={6}
+              linesCount={9}
               accentColor="#89b4fa"
               hoverMode="INSERT"
             >
@@ -318,7 +293,7 @@ export function BentoSection() {
             {/* ── 💻 SETUP SPEC CARD (Spans 1 column, 1 row) ───────────────────── */}
             <NeovimBuffer
               filename="setup.json"
-              linesCount={6}
+              linesCount={9}
               accentColor="#f9e2af"
               hoverMode="VISUAL"
             >
@@ -340,7 +315,7 @@ export function BentoSection() {
             {/* ── 🌐 WEB SKILLS CARD (Spans 1 column, 1 row) ───────────────────── */}
             <NeovimBuffer
               filename="web_dev.json"
-              linesCount={6}
+              linesCount={9}
               accentColor="#89dceb"
               hoverMode="INSERT"
             >
@@ -364,7 +339,7 @@ export function BentoSection() {
             {/* ── 🛠️ TOOLS SKILLS CARD (Spans 1 column, 1 row) ──────────────────── */}
             <NeovimBuffer
               filename="workflow.json"
-              linesCount={6}
+              linesCount={9}
               accentColor="#f38ba8"
               hoverMode="INSERT"
             >
@@ -388,7 +363,7 @@ export function BentoSection() {
             {/* ── 📚 LEARNING SKILLS CARD (Spans 1 column, 1 row) ───────────────── */}
             <NeovimBuffer
               filename="future.json"
-              linesCount={6}
+              linesCount={9}
               accentColor="#cba6f7"
               hoverMode="VISUAL"
             >
@@ -412,7 +387,7 @@ export function BentoSection() {
             {/* ── 🎯 PERSONAL ATLAS CARD (Spans 1 column, 1 row) ───────────────────── */}
             <NeovimBuffer
               filename="index_tree.txt"
-              linesCount={6}
+              linesCount={9}
               accentColor="#94e2d5"
               hoverMode="INSERT"
             >
