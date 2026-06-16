@@ -9,9 +9,10 @@ import { Footer } from '@/components/contact-section'
 
 interface ClientShellProps {
   children: ReactNode
+  hideNav?: boolean
 }
 
-export function ClientShell({ children }: ClientShellProps) {
+export function ClientShell({ children, hideNav = false }: ClientShellProps) {
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [fabVisible, setFabVisible] = useState(false)
 
@@ -47,15 +48,15 @@ export function ClientShell({ children }: ClientShellProps) {
       {/* Scroll progress indicator */}
       <ScrollProgress />
 
-      {/* Navigation */}
-      <NavBar onOpenPalette={() => setPaletteOpen(true)} />
+      {/* Navigation — hidden on pages that use their own WayBar */}
+      {!hideNav && <NavBar onOpenPalette={() => setPaletteOpen(true)} />}
 
       {/* Main content wrapper */}
-      <div className="flex flex-col min-h-screen">
+      <div className={hideNav ? 'contents' : 'flex flex-col min-h-screen'}>
         {children}
       </div>
 
-      <Footer />
+      {!hideNav && <Footer />}
 
       {/* Mobile command palette FAB */}
       <button
